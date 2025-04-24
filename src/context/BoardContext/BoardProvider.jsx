@@ -1,20 +1,17 @@
-import { Container } from "@mui/material";
-import { isEmpty } from "lodash";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import {
   createNewCardApi,
   createNewColumnApi,
   fetchBoardDetailAPI,
 } from "~/apis";
-import AppBar from "~/components/AppBar";
+import BoardContext from "./BoardContext";
+import PropTypes from "prop-types";
+import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
+import { isEmpty } from "lodash";
 import { generatePlaceholderCard } from "~/utils/formatters";
-import BoardBar from "./BoardBar";
-import BoardContent from "./BoardContent/BoardContent";
-import { mockData } from "~/apis/mock-data";
-// import { mockData } from "~/apis/mock-data";
-function Board() {
-  const [board, setBoard] = useState({});
+
+export const BoardProvider = ({ children }) => {
+  const [board, setBoard] = useState();
   //  cần điều chỉnh dùng react-router-dom để lấy url
   const boardId = "68056569f29a7224ad02d540";
 
@@ -24,8 +21,8 @@ function Board() {
       boardId: board._id,
     });
 
-    createdColumn.cards = [generatePlaceholderCard(createdColumn)];
-    createdColumn.cardOrderIds = [generatePlaceholderCard(createdColumn)._id];
+    createColumn.cards = [generatePlaceholderCard(createdColumn)];
+    createColumn.cardOrderIds = [generatePlaceholderCard(createdColumn)._id];
 
     // method 1
 
@@ -96,24 +93,12 @@ function Board() {
     });
   }, []);
   return (
-    <>
-      <AppBar />
-      <Container
-        // sx={{ height: "100vh",  }}
-
-        // disableGutters để bở padding 2 bên and mw = false là để full width
-        disableGutters
-        maxWidth={false}
-      >
-        <BoardBar board={board} />
-        <BoardContent
-          board={board}
-          createColumn={createColumn}
-          createCard={createCard}
-        />
-      </Container>
-    </>
+    <BoardContext.Provider value={{ board, createColumn, createCard }}>
+      {children}
+    </BoardContext.Provider>
   );
-}
+};
 
-export default Board;
+BoardProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};

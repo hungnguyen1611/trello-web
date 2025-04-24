@@ -24,10 +24,11 @@ function Recent() {
     <Box>
       <Button
         id="Recents-positioned-button"
-        aria-controls={open ? "demo-positioned-menu" : undefined}
+        aria-controls={open ? "Recents-positioned-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
+        // onMouseEnter={handleClick}
         endIcon={<ExpandMore />}
         sx={{
           color: "white",

@@ -2,6 +2,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {
   AddCard,
+  Close,
   Cloud,
   ContentCopy,
   ContentCut,
@@ -14,10 +15,12 @@ import {
   Box,
   Button,
   Divider,
+  IconButton,
   ListItemIcon,
   ListItemText,
   Menu,
   MenuItem,
+  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -25,8 +28,9 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import { mapOrder } from "~/utils/sorts";
 import { ListCards } from "./ListCards/ListCards";
+import { toast } from "react-toastify";
 
-export const Column = ({ column }) => {
+export const Column = ({ column, createCard }) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const open = Boolean(anchorEl);
@@ -52,6 +56,29 @@ export const Column = ({ column }) => {
     transform: CSS.Translate.toString(transform),
     transition,
     opacity: isDragging ? 0.7 : undefined,
+  };
+
+  const [openNewCard, setOpenNewColoumn] = useState(false);
+  const [newCardTitle, setNewCardTitle] = useState("");
+
+  const toggleOpenNewCard = () => setOpenNewColoumn(!openNewCard);
+
+  const addNewCard = async () => {
+    if (!newCardTitle)
+      return toast.error("Please enter Card Title", {
+        position: "bottom-right",
+      });
+
+    const dataNewCard = {
+      title: newCardTitle.trim(),
+      columnId: column._id,
+    };
+
+    await createCard(dataNewCard);
+
+    // Đóng trạng thái cập nhật Card và clear input
+    setNewCardTitle("");
+    toggleOpenNewCard();
   };
 
   return (
@@ -166,16 +193,87 @@ export const Column = ({ column }) => {
         <Box
           sx={{
             height: (theme) => theme.trello.columnFooterHeight,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            p: 1,
+
+            px: 1,
+            paddingTop: 0.5,
           }}
         >
-          <Button startIcon={<AddCard />}>Add new card</Button>
-          <Tooltip title="Drag to move">
-            <DragHandle sx={{ cursor: "pointer", color: "primary.main" }} />
-          </Tooltip>
+          {!openNewCard ? (
+            <Box
+              sx={{
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Button onClick={toggleOpenNewCard} startIcon={<AddCard />}>
+                Add new card
+              </Button>
+              <Tooltip title="Drag to move">
+                <DragHandle sx={{ cursor: "pointer", color: "primary.main" }} />
+              </Tooltip>
+            </Box>
+          ) : (
+            <Box
+              sx={{
+                display: "flex",
+                height: "fit-content",
+              }}
+            >
+              <TextField
+                onChange={(e) => setNewCardTitle(e.target.value)}
+                autoFocus
+                //  fixbug kéo vào input (thêm data-no-dnd để ko cho phần tử thực hiện kéo thả)
+                data-no-dnd="true"
+                value={newCardTitle}
+                variant="outlined"
+                label="Add New Card"
+                type="text"
+                //  size còn giúp lable căn giữa , nêu không có sẽ bị lệch
+                size="small"
+                sx={{
+                  height: "100%",
+                  width: "100%",
+                  "& label": { color: "primary.main" },
+
+                  "& input": { color: "primary.main", paddingY: 1 },
+
+                  "& label.Mui-focused": { color: "primary.main" },
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "primary.main",
+                      // border: "0px",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "primary.main",
+                    },
+
+                    "&.Mui-focused fieldset": {
+                      borderColor: "primary.main",
+                    },
+                  },
+                }}
+              />
+
+              <Box sx={{ display: "flex" }}>
+                <Button onClick={addNewCard}>Add</Button>
+                <IconButton
+                  size="small"
+                  aria-label="close"
+                  color="white"
+                  onClick={toggleOpenNewCard}
+                  sx={{
+                    "&:hover": {
+                      bgcolor: "transparent",
+                    },
+                  }}
+                >
+                  <Close fontSize="small" />
+                </IconButton>
+              </Box>
+            </Box>
+          )}
         </Box>
       </Box>
     </div>
@@ -184,4 +282,5 @@ export const Column = ({ column }) => {
 
 Column.propTypes = {
   column: PropTypes.object,
+  createCard: PropTypes.func,
 };

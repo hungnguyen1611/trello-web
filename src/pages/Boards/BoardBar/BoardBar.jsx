@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import {
   AddToDrive,
   Bolt,
@@ -8,6 +7,7 @@ import {
   VpnLock,
 } from "@mui/icons-material";
 import { Avatar, AvatarGroup, Box, Button, Tooltip } from "@mui/material";
+import PropTypes from "prop-types";
 
 import ChipBoard from "./Chip";
 
@@ -45,10 +45,15 @@ function BoardBar({ board }) {
             },
           }}
         /> */}
-        <ChipBoard icon={<Dashboard />} label={board.title} clickable />
+        <Tooltip title={board?.description}>
+          {/*  add box to be able to use tooltip */}
+          <Box>
+            <ChipBoard icon={<Dashboard />} label={board?.title} clickable />
+          </Box>
+        </Tooltip>
         <ChipBoard
           icon={<VpnLock />}
-          label={capitalizeFirstLetter(board.type)}
+          label={capitalizeFirstLetter(board?.type)}
           clickable
         />
         <ChipBoard
@@ -106,8 +111,9 @@ function BoardBar({ board }) {
 BoardBar.propTypes = {
   board: PropTypes.shape({
     title: PropTypes.string,
-    type: PropTypes.string.isRequired,
-  }).isRequired,
+    type: PropTypes.string,
+    description: PropTypes.string,
+  }),
 };
 
 export default BoardBar;

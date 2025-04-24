@@ -15,7 +15,7 @@ export const ListCards = ({ cards }) => {
       <Stack
         sx={{
           gap: 0.7,
-          p: "0 5px",
+          p: "0 7px 7px 7px",
           m: "0 5px",
           maxHeight: (theme) =>
             `calc(${theme.trello.boardBarContent} - ${theme.spacing(3.5)} - ${
@@ -41,5 +41,5 @@ export const ListCards = ({ cards }) => {
 };
 
 ListCards.propTypes = {
-  cards: PropTypes.object,
+  cards: PropTypes.array,
 };
