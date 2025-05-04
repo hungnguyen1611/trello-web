@@ -1,14 +1,16 @@
-import {
-  SortableContext,
-  horizontalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { SortableContext } from "@dnd-kit/sortable";
 import { Close, NoteAdd } from "@mui/icons-material";
 import { Box, Button, Stack, TextField } from "@mui/material";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { Column } from "./Column/Column";
-export const ListColumns = ({ columns, createColumn, createCard }) => {
+export const ListColumns = ({
+  columns,
+  createColumn,
+  createCard,
+  deleteColumnDetails,
+}) => {
   const [openNewColumn, setOpenNewColoumn] = useState(false);
   const [newColumnTitle, setNewColumnTitle] = useState("");
 
@@ -31,7 +33,7 @@ export const ListColumns = ({ columns, createColumn, createCard }) => {
   return (
     <SortableContext
       items={columns.map((c) => c._id)}
-      strategy={horizontalListSortingStrategy}
+      // strategy={horizontalListSortingStrategy}
     >
       <Stack
         direction="row"
@@ -47,7 +49,12 @@ export const ListColumns = ({ columns, createColumn, createCard }) => {
         }}
       >
         {columns?.map((column) => (
-          <Column column={column} createCard={createCard} key={column._id} />
+          <Column
+            column={column}
+            createCard={createCard}
+            key={column._id}
+            deleteColumnDetails={deleteColumnDetails}
+          />
         ))}
 
         {!openNewColumn ? (
@@ -146,4 +153,5 @@ ListColumns.propTypes = {
   columns: PropTypes.array,
   createColumn: PropTypes.func,
   createCard: PropTypes.func,
+  deleteColumnDetails: PropTypes.func,
 };

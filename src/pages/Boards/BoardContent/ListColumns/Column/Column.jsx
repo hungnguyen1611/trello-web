@@ -26,21 +26,52 @@ import {
 } from "@mui/material";
 import PropTypes from "prop-types";
 import { useState } from "react";
-import { mapOrder } from "~/utils/sorts";
-import { ListCards } from "./ListCards/ListCards";
 import { toast } from "react-toastify";
-
-export const Column = ({ column, createCard }) => {
+import { ListCards } from "./ListCards/ListCards";
+import { useConfirm } from "material-ui-confirm";
+export const Column = ({ column, createCard, deleteColumnDetails }) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const open = Boolean(anchorEl);
+
+  const confirmDeleteColumn = useConfirm();
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const orderedCards = mapOrder(column.cards, column.cardOrderIds, "_id");
+
+  const handleDeleteColumn = async () => {
+    const { confirmed, reason } = await confirmDeleteColumn({
+      title: "Delete Column",
+      description:
+        "This action will permanent delete your Column and its Card! Are you sure? Please Enter OK",
+      confirmationText: "Confirm",
+
+      // allowClose: false,
+      // dialogProps: {
+      //   maxWidth: "xs",
+      // },
+      // cancellationButtonProps: {
+      //   color: "secondary",
+      // },
+      // confirmationButtonProps: {
+      //   color: "success",
+      // },
+      // confirmationKeyword: "OK",
+      // buttonOrder: ["cancel", "confirm"],
+    });
+
+    if (confirmed) {
+      deleteColumnDetails(column._id);
+    }
+  };
+  // const orderedCards = mapOrder(column.cards, column.cardOrderIds, "_id");
+  //  Set column.cards luôn ở đây vì đã sửa lại sắp xếp ở trên board luôn để fix bug (bug tìm sai index của card)
+  const orderedCards = column.cards;
 
   const {
     attributes,
@@ -56,6 +87,8 @@ export const Column = ({ column, createCard }) => {
     transform: CSS.Translate.toString(transform),
     transition,
     opacity: isDragging ? 0.7 : undefined,
+    // tránh bug không có transform
+    height: "fit-content",
   };
 
   const [openNewCard, setOpenNewColoumn] = useState(false);
@@ -85,12 +118,14 @@ export const Column = ({ column, createCard }) => {
     // Phải bọc div ở ngoài vì vấn để chiều cao của column khi kéo thả sẽ gây ra bug flickering
     <div
       ref={setNodeRef}
-      style={dndKitColmnStyles}
       {...attributes}
+      style={dndKitColmnStyles}
       // {...listeners}
     >
       <Box
         {...listeners}
+        // {...attributes}
+        // ref={setNodeRef}
         sx={{
           minWidth: "300px",
           maxWidth: "300px",
@@ -128,6 +163,7 @@ export const Column = ({ column, createCard }) => {
             />
           </Tooltip>
           <Menu
+            onClick={handleClose}
             id="dropdown-positioned-menu"
             aria-labelledby="basic-column-dropdown"
             anchorEl={anchorEl}
@@ -145,9 +181,19 @@ export const Column = ({ column, createCard }) => {
               mt: 0.4, // Tăng khoảng cách trên (margin-top)
             }}
           >
-            <MenuItem>
+            <MenuItem
+              onClick={toggleOpenNewCard}
+              sx={{
+                "&:hover": {
+                  color: "success.light",
+                  "& .add-forever-icon": {
+                    color: "success.light",
+                  },
+                },
+              }}
+            >
               <ListItemIcon>
-                <AddCard fontSize="small" />
+                <AddCard className="add-forever-icon" fontSize="small" />
               </ListItemIcon>
               <ListItemText>Add new card</ListItemText>
             </MenuItem>
@@ -177,11 +223,24 @@ export const Column = ({ column, createCard }) => {
               </ListItemIcon>
               <ListItemText>Archive this column</ListItemText>
             </MenuItem>
-            <MenuItem>
+            <MenuItem
+              onClick={handleDeleteColumn}
+              sx={{
+                "&:hover": {
+                  color: "warning.dark",
+                  "& .delete-forever-icon": {
+                    color: "warning.dark",
+                  },
+                },
+              }}
+            >
               <ListItemIcon>
-                <DeleteForever fontSize="small" />
+                <DeleteForever
+                  className="delete-forever-icon"
+                  fontSize="small"
+                />
               </ListItemIcon>
-              <ListItemText>Remove this column</ListItemText>
+              <ListItemText>Delete this column</ListItemText>
             </MenuItem>
           </Menu>
         </Box>
@@ -237,7 +296,10 @@ export const Column = ({ column, createCard }) => {
                   width: "100%",
                   "& label": { color: "primary.main" },
 
-                  "& input": { color: "primary.main", paddingY: 1 },
+                  "& input": {
+                    color: "primary.main",
+                    paddingY: 1,
+                  },
 
                   "& label.Mui-focused": { color: "primary.main" },
                   "& .MuiOutlinedInput-root": {
@@ -281,6 +343,7 @@ export const Column = ({ column, createCard }) => {
 };
 
 Column.propTypes = {
-  column: PropTypes.object,
+  column: PropTypes.object.isRequired,
   createCard: PropTypes.func,
+  deleteColumnDetails: PropTypes.func,
 };
