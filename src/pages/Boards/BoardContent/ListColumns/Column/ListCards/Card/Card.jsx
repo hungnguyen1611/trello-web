@@ -48,6 +48,10 @@ export const CardItem = ({ card }) => {
           cursor: "pointer",
           overflow: "unset",
           display: card?.FE_PlaceholderCard ? "none" : "block",
+          border: "solid 1px transparent",
+          "&:hover": {
+            borderColor: "primary.main",
+          },
         }}
       >
         {card?.cover && (

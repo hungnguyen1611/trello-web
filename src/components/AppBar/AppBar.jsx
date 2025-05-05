@@ -15,7 +15,6 @@ import Recent from "./Menus/Recent";
 import Starred from "./Menus/Starred";
 import Template from "./Menus/Templates";
 import {
-  AccountCircle,
   AddToPhotos,
   Close,
   HelpOutline,
@@ -97,17 +96,17 @@ function AppBar() {
                 </InputAdornment>
               ),
               endAdornment: (
-                // <InputAdornment position="end">
-                <Close
-                  onClick={() => setSearchValue("")}
-                  sx={{
-                    color: searchValue ? "white" : "transparent",
+                <InputAdornment position="end">
+                  <Close
+                    onClick={() => setSearchValue("")}
+                    sx={{
+                      color: searchValue ? "white" : "transparent",
 
-                    cursor: "pointer",
-                  }}
-                  fontSize="small"
-                />
-                // </InputAdornment>
+                      cursor: "pointer",
+                    }}
+                    fontSize="small"
+                  />
+                </InputAdornment>
               ),
             },
           }}
