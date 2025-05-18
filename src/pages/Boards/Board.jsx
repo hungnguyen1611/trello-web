@@ -1,110 +1,43 @@
-import { Box, CircularProgress, Container, Typography } from "@mui/material";
-import { isEmpty } from "lodash";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { Container } from "@mui/material";
+import { cloneDeep } from "lodash";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import {
-  createNewCardApi,
-  createNewColumnApi,
-  deleteColumnDetailAPI,
-  fetchBoardDetailAPI,
   moveCardToDifferentColumnAPI,
   UpdateBoardDetailAPI,
   UpdateColumnDetailAPI,
 } from "~/apis";
 import AppBar from "~/components/AppBar";
-import { generatePlaceholderCard } from "~/utils/formatters";
+import { Loading } from "~/components/Loading/Loading";
+import {
+  fetchBoardDetailAPI,
+  selectCurrentActiveBoard,
+  updateCurrentActiveBoard,
+} from "~/redux/activeBoard/ActiveBoardSlice";
 import BoardBar from "./BoardBar";
 import BoardContent from "./BoardContent/BoardContent";
-import { mapOrder } from "~/utils/sorts";
+
 // import { mockData } from "~/apis/mock-data";
 function Board() {
-  const [board, setBoard] = useState({});
-  //  cần điều chỉnh dùng react-router-dom để lấy url
-  const boardId = "68056569f29a7224ad02d540";
+  const { boardId } = useParams();
+  // const boardId = "68056569f29a7224ad02d540";
 
-  const createColumn = async (newColumnData) => {
-    const createdColumn = await createNewColumnApi({
-      ...newColumnData,
-      boardId: board._id,
-    });
+  // Không dùng State của compoent nữa
+  const board = useSelector(selectCurrentActiveBoard);
 
-    // method 1
-
-    // if (createdColumn) {
-    //   setBoard((boardPrev) => ({
-    //     ...boardPrev,
-    //     columns: [...boardPrev.columns, createdColumn],
-    //     columnIds: [...boardPrev.columnIds, createdColumn._id],
-    //   }));
-    //   toast.success("Created Column Success");
-    // }
-    // method 2
-
-    //  Tùy đặc thù dự án backEnd có nới backEnd trả về toàn bộ dataBoard luôn lúc này thì frontEnd sẽ nhàn hơn
-    if (createdColumn) {
-      createdColumn.cards = [generatePlaceholderCard(createdColumn)];
-      createdColumn.cardOrderIds = [generatePlaceholderCard(createdColumn)._id];
-      const newBoard = { ...board };
-      newBoard.columns.push(createdColumn),
-        newBoard.columnOrderIds.push(createdColumn._id);
-      setBoard(newBoard);
-      toast.success("created Column Success");
-    }
-  };
-
-  const createCard = async (newCardData) => {
-    console.log("boardId in createCard", board._id);
-    const createdCard = await createNewCardApi({
-      ...newCardData,
-      boardId: board._id,
-    });
-
-    if (createdCard) {
-      // Method 1
-      // setBoard((boardPrev) => {
-      //   const columnUpdata = boardPrev.columns.map((column) => {
-      //     if (column._id === createdCard.columnId) {
-      //       return { ...column, cards: [...column.cards, createdCard] };
-      //     }
-      //     return column;
-      //   });
-
-      //   return { ...boardPrev, columns: columnUpdata };
-      // });
-
-      //   Method 2
-
-      const newBoard = { ...board }; // clone nông
-      const columnToUpdate = newBoard.columns.find(
-        (column) => column._id === createdCard.columnId
-      );
-
-      if (columnToUpdate) {
-        // Xử lí column khi đang rỗng chứ placeholdeCard
-        if (columnToUpdate.cards.some((card) => card.FE_PlaceholderCard)) {
-          columnToUpdate.cards = [createdCard];
-          columnToUpdate.cardOrderIds = [createdCard._id];
-        } else {
-          columnToUpdate.cards.push(createdCard); // ✅ đẩy card vào
-          columnToUpdate.cardOrderIds.push(createdCard._id); // ✅ đẩy id vào
-        }
-      }
-
-      setBoard(newBoard); // cập nhật lại state
-
-      toast.success("Create Card Success");
-    }
-  };
+  const dispatch = useDispatch();
 
   // Func gọi api khi kéo thả column xong xuôi
 
   const moveColumns = (dndOrderedColumns) => {
-    // cập nhật để board đồng bộ ( có thể không cần vẫn không vẫn đề  )
+    // Trường hợp dùng Spread Operator thì ko sao vì ở đây không dùng push làm thay đổi trực tiếp kiểu mở rổng mạng
+    // mà chỉ đang gán lại hai giá trị columns và comlumnOrderIds bằng 2 giá trị mảng mới giống như dùng concat()
     const newBoard = { ...board };
     const dndOrderedColumnIds = dndOrderedColumns.map((column) => column._id);
     newBoard.columns = dndOrderedColumns;
     newBoard.columnOrderIds = dndOrderedColumnIds;
-    setBoard(newBoard);
+    dispatch(updateCurrentActiveBoard(newBoard));
 
     //  Không cần await vì không hứng kết quả hay làm gì tiếp sau khi đã gọi
     UpdateBoardDetailAPI(newBoard._id, {
@@ -120,7 +53,9 @@ function Board() {
     columnId
   ) => {
     // Update cho chuẩn dữ liệu State Board
-    const newBoard = { ...board };
+    // Dùng cloneDeep để fix lỗi khi sao chép giá trị của redux
+    // Trường hợp Immutability đã đụng tới giá trị cards đang được coi là chỉ đọc read Only(nested Oject - can thiệp sâu dữ liệu)
+    const newBoard = cloneDeep(board);
     const updateColumn = newBoard.columns.find(
       (column) => column._id === columnId
     );
@@ -128,7 +63,7 @@ function Board() {
       updateColumn.cardOrderIds = dndOrderedCardId;
       updateColumn.cards = dndOrderedCard;
     }
-    setBoard(newBoard);
+    dispatch(updateCurrentActiveBoard(newBoard));
     //  Đổi tên key cho đúng với dữ liệu backEnd (có thể tùy ý đặt tên nếu api có config)
     UpdateColumnDetailAPI(columnId, { cardOrderIds: dndOrderedCardId });
   };
@@ -139,10 +74,12 @@ function Board() {
     dndOrderedColumn
   ) => {
     const dndOrderedColumnsIds = dndOrderedColumn.map((column) => column._id);
+    // Tương tự như moveColumn ở trên vì không làm thay đổi trực tiếp dữ liệu và không  can thiệp dữ liệu sâu ,
+    // Nên không ảnh hưởng Redux ToolKit Immutability gì ở đây cả
     const newBoard = { ...board };
     newBoard.columns = dndOrderedColumn;
     newBoard.columnOrderIds = dndOrderedColumnsIds;
-    setBoard(newBoard);
+    dispatch(updateCurrentActiveBoard(newBoard));
 
     // Gọi Api từ BE
 
@@ -164,53 +101,12 @@ function Board() {
     });
   };
 
-  const deleteColumnDetails = (columnId) => {
-    setBoard((prevBoard) => ({
-      ...prevBoard,
-      columns: prevBoard.columns.filter((c) => c._id !== columnId),
-      columnOrderIds: prevBoard.columnOrderIds.filter(
-        (_id) => _id !== columnId
-      ),
-    }));
-    deleteColumnDetailAPI(columnId).then((res) => {
-      toast.success(res?.resultDelete);
-    });
-  };
-
   useEffect(() => {
-    fetchBoardDetailAPI(boardId).then((board) => {
-      // Sắp xếp thứ tự column luôn ở đây sau đó mới đưa xuống component con để tránh bug
-      board.columns = mapOrder(board.columns, board.columnOrderIds, "_id");
-      board.columns.forEach((column) => {
-        //  Khi F5 trang web thì cần xử lí kéo thả vào trường hợp column rỗng card
-        if (isEmpty(column.cards)) {
-          column.cards = [generatePlaceholderCard(column)];
-          column.cardOrderIds = [generatePlaceholderCard(column)._id];
-        } else {
-          // Sắp xếp thứ tự Card luôn ở đây sau đó mới đưa xuống component con để tránh bug
+    // Call Api lấy data boardActive
+    dispatch(fetchBoardDetailAPI(boardId));
+  }, [dispatch, boardId]);
 
-          column.cards = mapOrder(column.cards, column.cardOrderIds, "_id");
-        }
-      });
-      setBoard(board);
-    });
-  }, []);
-
-  if (!board || !board.columns)
-    return (
-      <Box
-        sx={{
-          height: 200,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: 2,
-        }}
-      >
-        <CircularProgress disableShrink />
-        <Typography>Loading Board ...</Typography>
-      </Box>
-    );
+  if (!board || !board.columns) return <Loading caption="Loading Board" />;
   return (
     <>
       <AppBar />
@@ -224,12 +120,10 @@ function Board() {
         <BoardBar board={board} />
         <BoardContent
           board={board}
-          createColumn={createColumn}
-          createCard={createCard}
+          // 3 phần dữ nguyên vì xử lí ngay ở BoardContent
           moveColumns={moveColumns}
           moveCardInTheSameColumn={moveCardInTheSameColumn}
           moveCardToDifferentColumn={moveCardToDifferentColumn}
-          deleteColumnDetails={deleteColumnDetails}
         />
       </Container>
     </>

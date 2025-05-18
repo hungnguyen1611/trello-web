@@ -28,12 +28,10 @@ const ACTIVE_DRAG_ITEM_TYPE = {
 };
 function BoardContent({
   board,
-  createColumn,
-  createCard,
+
   moveColumns,
   moveCardInTheSameColumn,
   moveCardToDifferentColumn,
-  deleteColumnDetails,
 }) {
   const [orderedColumns, setOrderedColumns] = useState([]);
   const [activeDragItemId, setActiveDragItemId] = useState(null);
@@ -421,12 +419,7 @@ function BoardContent({
           height: (theme) => theme.trello.boardBarContent,
         }}
       >
-        <ListColumns
-          columns={orderedColumns}
-          createColumn={createColumn}
-          createCard={createCard}
-          deleteColumnDetails={deleteColumnDetails}
-        />
+        <ListColumns columns={orderedColumns} />
         <DragOverlay dropAnimation={dropAnimation}>
           {/* {!activeDragItemType && null} */}
           {activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN && (

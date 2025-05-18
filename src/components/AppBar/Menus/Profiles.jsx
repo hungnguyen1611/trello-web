@@ -9,22 +9,44 @@ import {
   MenuItem,
   Tooltip,
 } from "@mui/material";
-import { useState } from "react";
+import { useConfirm } from "material-ui-confirm";
+import { useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUserAPI, selectCurrentUser } from "~/redux/user/userSlice";
 
 function Profile() {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  // const ref = useRef(null);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
+    // setAnchorEl(ref.current);
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const currentUser = useSelector(selectCurrentUser);
+  const confirmLogout = useConfirm();
+  const dispatch = useDispatch();
+  const handleLogout = async () => {
+    const { confirmed } = await confirmLogout({
+      title: "Log out of your accout?",
+      confirmationText: "confirm",
+      cancellationText: "cancel",
+    });
+    if (confirmed) {
+      dispatch(logoutUserAPI());
+    }
   };
 
   return (
     <Box>
       <Tooltip title="Account settings">
         <IconButton
+          // onMouseEnter={handleClick}
+          // onMouseLeave={handleClose}
           onClick={handleClick}
           size="small"
           sx={{ padding: 0 }}
@@ -33,7 +55,7 @@ function Profile() {
           aria-expanded={open ? "true" : undefined}
         >
           <Avatar
-            src="https://p9-sign-sg.tiktokcdn.com/aweme/720x720/tos-alisg-avt-0068/3bc9ced3ed5ba6604d93ca5976a8e267.jpeg?lk3s=a5d48078&nonce=21332&refresh_token=a5dcfdaa874bbee510d118af45292862&x-expires=1732647600&x-signature=Q0cAGmWy7GBfpEMuUcIDHhbw%2F2s%3D&shp=a5d48078&shcp=81f88b70"
+            src={currentUser?.avatar}
             sx={{ width: 32, height: 32 }}
             alt="hungnguyen"
           />
@@ -45,6 +67,7 @@ function Profile() {
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
+        onClick={handleClose}
         anchorOrigin={{
           vertical: "bottom",
           horizontal: "left",
@@ -57,13 +80,19 @@ function Profile() {
           mt: 0.4, // Tăng khoảng cách trên (margin-top)
         }}
       >
-        <MenuItem onClick={handleClose}>
-          <Avatar sx={{ width: 27, height: 27, mr: 0.5 }} /> Profile
+        <MenuItem
+          sx={{ "&:hover": { color: "success.light" } }}
+          onClick={handleClose}
+        >
+          <Avatar
+            sx={{ width: 27, height: 27, mr: 0.5 }}
+            alt="hungnguyen"
+            src={currentUser?.avatar}
+          />{" "}
+          Profile
         </MenuItem>
-        <MenuItem onClick={handleClose}>
-          <Avatar sx={{ width: 27, height: 27, mr: 0.5 }} /> My account
-        </MenuItem>
-        <Divider />
+
+        <Divider sx={{ backgroundColor: "primary.light" }} />
         <MenuItem onClick={handleClose}>
           <ListItemIcon>
             <PersonAdd fontSize="small" />
@@ -76,9 +105,19 @@ function Profile() {
           </ListItemIcon>
           Settings
         </MenuItem>
-        <MenuItem onClick={handleClose}>
+        <MenuItem
+          sx={{
+            "&:hover": {
+              color: "warning.dark",
+              "& .logout-icon": {
+                color: "warning.dark",
+              },
+            },
+          }}
+          onClick={handleLogout}
+        >
           <ListItemIcon>
-            <Logout fontSize="small" />
+            <Logout className="logout-icon" fontSize="small" />
           </ListItemIcon>
           Logout
         </MenuItem>
