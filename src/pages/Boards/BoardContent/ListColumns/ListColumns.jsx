@@ -5,12 +5,17 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { Column } from "./Column/Column";
-export const ListColumns = ({
-  columns,
-  createColumn,
-  createCard,
-  deleteColumnDetails,
-}) => {
+import { createNewColumnApi } from "~/apis";
+import { generatePlaceholderCard } from "~/utils/formatters";
+import { cloneDeep } from "lodash";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectCurrentActiveBoard,
+  updateCurrentActiveBoard,
+} from "~/redux/activeBoard/ActiveBoardSlice";
+export const ListColumns = ({ columns }) => {
+  const dispatch = useDispatch();
+  const board = useSelector(selectCurrentActiveBoard);
   const [openNewColumn, setOpenNewColoumn] = useState(false);
   const [newColumnTitle, setNewColumnTitle] = useState("");
 
@@ -20,10 +25,35 @@ export const ListColumns = ({
     if (!newColumnTitle)
       return toast.error("Please enter Column Title", { theme: "colored" });
 
-    const addNewColumn = {
+    const newColumnData = {
       title: newColumnTitle.trim(),
     };
-    await createColumn(addNewColumn);
+    // await createColumn(addNewColumn);
+
+    // Call Api
+
+    const createdColumn = await createNewColumnApi({
+      ...newColumnData,
+      boardId: board._id,
+    });
+
+    //  Tùy đặc thù dự án backEnd có nới backEnd trả về toàn bộ dataBoard luôn lúc này thì frontEnd sẽ nhàn hơn
+    if (createdColumn) {
+      createdColumn.cards = [generatePlaceholderCard(createdColumn)];
+      createdColumn.cardOrderIds = [generatePlaceholderCard(createdColumn)._id];
+      // const newBoard = { ...board };
+      // Dùng cloneDeep để tránh lỗi trong redux về vấn để sao chép dữ liệu
+      // hoặc có thể dùng concat vì concat sẽ trả về mảng mới
+      // VD: newBoard.columnOrderIds = newBoard.columns.concat([createdColumn])
+      // Push thay đổi trực tiếp giá trị của mảng, concat ghép mảng và tạo ra một mảng mới nên ko vấn đề
+      const newBoard = cloneDeep(board);
+      newBoard.columns.push(createdColumn),
+        newBoard.columnOrderIds.push(createdColumn._id);
+
+      dispatch(updateCurrentActiveBoard(newBoard));
+
+      toast.success("created Column Success");
+    }
 
     // Đóng trạng thái cập nhật column và clear input
     setNewColumnTitle("");
@@ -49,12 +79,7 @@ export const ListColumns = ({
         }}
       >
         {columns?.map((column) => (
-          <Column
-            column={column}
-            createCard={createCard}
-            key={column._id}
-            deleteColumnDetails={deleteColumnDetails}
-          />
+          <Column column={column} key={column._id} />
         ))}
 
         {!openNewColumn ? (
@@ -69,6 +94,7 @@ export const ListColumns = ({
             }}
           >
             <Button
+              className="interceptor-loading"
               onClick={toggleOpenNewColumn}
               startIcon={<NoteAdd />}
               sx={{
@@ -133,7 +159,11 @@ export const ListColumns = ({
                 padding: 0.5,
               }}
             >
-              <Button onClick={addNewColumn} sx={{ color: "white" }}>
+              <Button
+                className="interceptor-loading"
+                onClick={addNewColumn}
+                sx={{ color: "white" }}
+              >
                 Add New
               </Button>
               <Close

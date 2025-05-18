@@ -24,12 +24,22 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { cloneDeep } from "lodash";
+import { useConfirm } from "material-ui-confirm";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { createNewCardApi, deleteColumnDetailAPI } from "~/apis";
+import {
+  selectCurrentActiveBoard,
+  updateCurrentActiveBoard,
+} from "~/redux/activeBoard/ActiveBoardSlice";
+
 import { ListCards } from "./ListCards/ListCards";
-import { useConfirm } from "material-ui-confirm";
-export const Column = ({ column, createCard, deleteColumnDetails }) => {
+import { useDispatch, useSelector } from "react-redux";
+export const Column = ({ column }) => {
+  const board = useSelector(selectCurrentActiveBoard);
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
 
   const open = Boolean(anchorEl);
@@ -45,7 +55,7 @@ export const Column = ({ column, createCard, deleteColumnDetails }) => {
   };
 
   const handleDeleteColumn = async () => {
-    const { confirmed, reason } = await confirmDeleteColumn({
+    const { confirmed } = await confirmDeleteColumn({
       title: "Delete Column",
       description:
         "This action will permanent delete your Column and its Card! Are you sure? Please Enter OK",
@@ -66,7 +76,26 @@ export const Column = ({ column, createCard, deleteColumnDetails }) => {
     });
 
     if (confirmed) {
-      deleteColumnDetails(column._id);
+      // deleteColumnDetails(column._id);
+      // Tương tự như moveColumn ở trên vì không làm thay đổi trực tiếp dữ liệu và không  can thiệp dữ liệu sâu ,
+      // Nên không ảnh hưởng Redux ToolKit Immutability gì ở đây cả
+      const newBoard = { ...board };
+      newBoard.columns = newBoard.columns.filter((c) => c._id !== column._id);
+      (newBoard.columnOrderIds = newBoard.columnOrderIds.filter(
+        (_id) => _id !== column._id
+      )),
+        dispatch(updateCurrentActiveBoard(newBoard));
+
+      // setBoard((prevBoard) => ({
+      //   ...prevBoard,
+      //   columns: prevBoard.columns.filter((c) => c._id !== column._id),
+      //   columnOrderIds: prevBoard.columnOrderIds.filter(
+      //     (_id) => _id !== column._id
+      //   ),
+      // }));
+      deleteColumnDetailAPI(column._id).then((res) => {
+        toast.success(res?.resultDelete);
+      });
     }
   };
   // const orderedCards = mapOrder(column.cards, column.cardOrderIds, "_id");
@@ -102,12 +131,40 @@ export const Column = ({ column, createCard, deleteColumnDetails }) => {
         position: "bottom-right",
       });
 
-    const dataNewCard = {
+    const newCardData = {
       title: newCardTitle.trim(),
       columnId: column._id,
     };
 
-    await createCard(dataNewCard);
+    // await createCard(dataNewCard);
+    // Call Api và update Data
+    const createdCard = await createNewCardApi({
+      ...newCardData,
+      boardId: board._id,
+    });
+
+    if (createdCard) {
+      // Dùng cloneDeep để fix lỗi khi sao chép giá trị của redux
+      const newBoard = cloneDeep(board);
+      const columnToUpdate = newBoard.columns.find(
+        (column) => column._id === createdCard.columnId
+      );
+
+      if (columnToUpdate) {
+        // Xử lí column khi đang rỗng chứ placeholdeCard
+        if (columnToUpdate.cards.some((card) => card.FE_PlaceholderCard)) {
+          columnToUpdate.cards = [createdCard];
+          columnToUpdate.cardOrderIds = [createdCard._id];
+        } else {
+          columnToUpdate.cards.push(createdCard); // ✅ đẩy card vào
+          columnToUpdate.cardOrderIds.push(createdCard._id); // ✅ đẩy id vào
+        }
+      }
+
+      dispatch(updateCurrentActiveBoard(newBoard));
+
+      toast.success("Create Card Success");
+    }
 
     // Đóng trạng thái cập nhật Card và clear input
     setNewCardTitle("");
@@ -319,7 +376,9 @@ export const Column = ({ column, createCard, deleteColumnDetails }) => {
               />
 
               <Box sx={{ display: "flex" }}>
-                <Button onClick={addNewCard}>Add</Button>
+                <Button className="interceptor-loading" onClick={addNewCard}>
+                  Add
+                </Button>
                 <IconButton
                   size="small"
                   aria-label="close"

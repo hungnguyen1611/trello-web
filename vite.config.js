@@ -6,9 +6,18 @@ import svgr from "vite-plugin-svgr";
 export default defineConfig({
   define: {
     //  Cấu hình cho phép dùng process.env
+    // eslint-disable-next-line no-undef
     "process.env": process.env,
   },
-  plugins: [svgr(), react()],
+  plugins: [
+    svgr({
+      exportAsDefault: false, // 👈 phải có dòng này để dùng ReactComponent
+      svgrOptions: {
+        exportType: "named", // 👈 để dùng { ReactComponent as ... }
+      },
+    }),
+    react(),
+  ],
   resolve: {
     alias: [{ find: "~", replacement: "/src" }],
   },
