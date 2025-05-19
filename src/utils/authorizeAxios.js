@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { interceptorLoadingElements } from "./formatters";
 import { logoutUserAPI } from "~/redux/user/userSlice";
 import { refreshTokenAPI } from "~/apis";
+import { API_ROOT } from "./constants";
 
 /**
  * Không thể import trực tiếp { store } từ '~/redux/store' theo cách thông thường trong file này.
@@ -24,7 +25,7 @@ export const injectStore = (mainStore) => {
 };
 
 let authorizeAxiosInstance = axios.create({
-  baseURL: "http://localhost:3003",
+  baseURL: API_ROOT,
 });
 
 // Thời gian chờ rối đa của một request: để 10 phút
