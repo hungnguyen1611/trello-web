@@ -14,7 +14,7 @@ import {
   fetchBoardDetailAPI,
   selectCurrentActiveBoard,
   updateCurrentActiveBoard,
-} from "~/redux/activeBoard/ActiveBoardSlice";
+} from "~/redux/activeBoard/activeBoardSlice";
 import BoardBar from "./BoardBar";
 import BoardContent from "./BoardContent/BoardContent";
 

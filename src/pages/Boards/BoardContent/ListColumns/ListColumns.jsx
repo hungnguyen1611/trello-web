@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   selectCurrentActiveBoard,
   updateCurrentActiveBoard,
-} from "~/redux/activeBoard/ActiveBoardSlice";
+} from "~/redux/activeBoard/activeBoardSlice";
 export const ListColumns = ({ columns }) => {
   const dispatch = useDispatch();
   const board = useSelector(selectCurrentActiveBoard);

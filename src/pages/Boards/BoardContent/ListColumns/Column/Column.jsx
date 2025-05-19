@@ -33,7 +33,7 @@ import { createNewCardApi, deleteColumnDetailAPI } from "~/apis";
 import {
   selectCurrentActiveBoard,
   updateCurrentActiveBoard,
-} from "~/redux/activeBoard/ActiveBoardSlice";
+} from "~/redux/activeBoard/activeBoardSlice";
 
 import { ListCards } from "./ListCards/ListCards";
 import { useDispatch, useSelector } from "react-redux";
