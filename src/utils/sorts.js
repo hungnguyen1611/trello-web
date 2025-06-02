@@ -14,38 +14,46 @@
  * Xác định các phần tử trong array gốc ban đầu (originalArray) xem nó nằm ở đâu trong array thứ 2 (orderArray) (là array mà mình dùng để sắp xếp) bằng cách tìm index (indexOf) rồi sẽ sắp xếp theo index đó bằng hàm sort của Javascript.
  */
 
- export const mapOrder = (originalArray, orderArray, key) => {
-    if (!originalArray || !orderArray || !key) return []
+export const mapOrder = (originalArray, orderArray, key) => {
+  if (!originalArray || !orderArray || !key) return [];
 
-    return [...originalArray].sort((a,b)=> orderArray.indexOf(a[key]) -orderArray.indexOf(b[key]) )
-  
-    // const clonedArray = [...originalArray]
-    // const orderedArray = clonedArray.sort((a, b) => {
-    //   return orderArray.indexOf(a[key]) - orderArray.indexOf(b[key])
-    // })
-  
-    // return orderedArray
+  return [...originalArray].sort(
+    (a, b) => orderArray.indexOf(a[key]) - orderArray.indexOf(b[key])
+  );
 
+  // const clonedArray = [...originalArray]
+  // const orderedArray = clonedArray.sort((a, b) => {
+  //   return orderArray.indexOf(a[key]) - orderArray.indexOf(b[key])
+  // })
 
-  }
-  
-  /**
-   * Example:
-   */
-  // const originalItems = [
-  //   { id: 'id-1', name: 'One' },
-  //   { id: 'id-2', name: 'Two' },
-  //   { id: 'id-3', name: 'Three' },
-  //   { id: 'id-4', name: 'Four' },
-  //   { id: 'id-5', name: 'Five' }
-  // ]
-  // const itemOrderIds = ['id-1', 'id-4', 'id-2', 'id-3', 'id-5']
-  // const key = 'id'
-  
-  // const orderedArray = mapOrder(originalItems, itemOrderIds, key)
-  // console.log('Original:', originalItems)
-  // console.log('Ordered:', orderedArray)
-  /**
+  // return orderedArray
+};
+
+export const mapOrdercardMember = (boardUsers, cardMemberIds) => {
+  return cardMemberIds
+    .map((i) => {
+      return boardUsers.find((user) => user._id === i);
+    })
+    .concat(boardUsers?.filter((user) => !cardMemberIds.includes(user._id)));
+};
+
+/**
+ * Example:
+ */
+// const originalItems = [
+//   { id: 'id-1', name: 'One' },
+//   { id: 'id-2', name: 'Two' },
+//   { id: 'id-3', name: 'Three' },
+//   { id: 'id-4', name: 'Four' },
+//   { id: 'id-5', name: 'Five' }
+// ]
+// const itemOrderIds = ['id-1', 'id-4', 'id-2', 'id-3', 'id-5']
+// const key = 'id'
+
+// const orderedArray = mapOrder(originalItems, itemOrderIds, key)
+// console.log('Original:', originalItems)
+// console.log('Ordered:', orderedArray)
+/**
    * Results:
    * 
    * Original: Of course, nothing changes =))

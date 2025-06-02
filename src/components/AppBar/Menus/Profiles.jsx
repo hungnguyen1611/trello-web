@@ -10,8 +10,9 @@ import {
   Tooltip,
 } from "@mui/material";
 import { useConfirm } from "material-ui-confirm";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { logoutUserAPI, selectCurrentUser } from "~/redux/user/userSlice";
 
 function Profile() {
@@ -79,18 +80,26 @@ function Profile() {
         sx={{
           mt: 0.4, // Tăng khoảng cách trên (margin-top)
         }}
+        slotProps={{
+          root: {
+            "aria-hidden": open ? "false" : "true", // Kiểm soát aria-hidden (fix cảnh warning)
+            // inert: open ? undefined : "", // Sử dụng inert khi menu đóng (thuộc html5 nên ko tương thích với một số trình duyệt như safari hay Firefox)
+          },
+        }}
       >
-        <MenuItem
-          sx={{ "&:hover": { color: "success.light" } }}
-          onClick={handleClose}
-        >
-          <Avatar
-            sx={{ width: 27, height: 27, mr: 0.5 }}
-            alt="hungnguyen"
-            src={currentUser?.avatar}
-          />{" "}
-          Profile
-        </MenuItem>
+        <Link to={"/settings/account"} style={{ color: "inherit" }}>
+          <MenuItem
+            sx={{ "&:hover": { color: "success.light" } }}
+            onClick={handleClose}
+          >
+            <Avatar
+              sx={{ width: 27, height: 27, mr: 0.5 }}
+              alt="hungnguyen"
+              src={currentUser?.avatar}
+            />{" "}
+            Profile
+          </MenuItem>
+        </Link>
 
         <Divider sx={{ backgroundColor: "primary.light" }} />
         <MenuItem onClick={handleClose}>

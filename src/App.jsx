@@ -1,11 +1,13 @@
 /* eslint-disable react/prop-types */
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
-import Board from "./pages/Boards";
+import Board from "./pages/Boards/Board";
 import NotFound from "./pages/404/NotFound";
 import Auth from "./pages/Auth";
 import AccountVerification from "./pages/Auth/AccountVerification";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "~/redux/user/userSlice";
+import Settings from "./pages/Settings/Settings";
+import Boards from "./pages/Boards";
 
 const ProtectedRoute = ({ user }) => {
   if (!user) {
@@ -26,7 +28,8 @@ function App() {
           // history của Browser nữa
           // Thực hành bằng cách dễ hiểu hơn bằng cách nhấn Go home từ trang 404 xong quay lại bằng nút
           // back của trình duyệt giứa 2 trường hợp có replace hoặc không có
-          <Navigate to="boards/68056569f29a7224ad02d540" replace={true} />
+          // 'boards' ko / trình duyệt cx sẽ tự động hiểu
+          <Navigate to="/boards" replace={true} />
         }
       />
 
@@ -44,7 +47,10 @@ function App() {
       {/* ProtectedRoute hiểu đơn giản là những route chỉ cho truy cập sau khi đã login */}
       <Route element={<ProtectedRoute user={currentUser} />}>
         {/* Outlet của react-router-dom sẽ chạy vào các child trong này */}
+        <Route path="/boards" element={<Boards />} />
         <Route path="/boards/:boardId" element={<Board />} />
+        <Route path="/settings/account" element={<Settings />} />
+        <Route path="/settings/security" element={<Settings />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

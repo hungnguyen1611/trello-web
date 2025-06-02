@@ -1,31 +1,18 @@
-import {
-  Badge,
-  Box,
-  Button,
-  InputAdornment,
-  TextField,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import ModeSelect from "../ModeSelect";
+import { AddToPhotos, HelpOutline } from "@mui/icons-material";
 import AppsIcon from "@mui/icons-material/Apps";
+import { Box, Button, Tooltip, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
 import { TrelloIcon } from "../Icons/Icon";
-import WorkSpace from "./Menus/WorkSpaces";
+import ModeSelect from "../ModeSelect";
+import Profile from "./Menus/Profiles";
 import Recent from "./Menus/Recent";
 import Starred from "./Menus/Starred";
 import Template from "./Menus/Templates";
-import {
-  AddToPhotos,
-  Close,
-  HelpOutline,
-  NotificationsNone,
-  Search,
-} from "@mui/icons-material";
-import Profile from "./Menus/Profiles";
-import { useState } from "react";
+import WorkSpace from "./Menus/WorkSpaces";
+import Notifications from "./Notifications/Notifications";
+import AutoCompleteSearchBoard from "./SearchBoards/AutoCompleteSearchBoard";
 
 function AppBar() {
-  const [searchValue, setSearchValue] = useState();
   return (
     <Box
       sx={{
@@ -40,19 +27,34 @@ function AppBar() {
           theme.palette.mode === "dark" ? "#2c3e50" : "#1565c0",
       }}
     >
-      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-        <AppsIcon sx={{ color: "white" }} />
-        <Box sx={{ display: "flex", alignItems: "center", gap: 0.2 }}>
-          <TrelloIcon fontSize="small" sx={{ color: "white" }} />
-          <Typography
-            variant="span"
-            sx={{ fontSize: "1rem", fontWeight: "bold", color: "white" }}
-          >
-            {" "}
-            Trello
-          </Typography>
-        </Box>
-        <Box sx={{ display: { xs: "none", md: "flex", gap: 0.2 } }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Link to={"/boards"}>
+          {" "}
+          <Tooltip title="App list">
+            <AppsIcon sx={{ color: "white", verticalAlign: "middle" }} />
+          </Tooltip>
+        </Link>
+        <Link to={"/"}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.2 }}>
+            <TrelloIcon fontSize="small" sx={{ color: "white" }} />
+            <Typography
+              variant="span"
+              sx={{ fontSize: "1rem", fontWeight: "bold", color: "white" }}
+            >
+              {" "}
+              Trello
+            </Typography>
+          </Box>
+        </Link>
+        <Box
+          sx={{
+            display: {
+              xs: "none",
+              md: "flex",
+              gap: 0.2,
+            },
+          }}
+        >
           <WorkSpace />
           <Recent />
           <Starred />
@@ -81,62 +83,10 @@ function AppBar() {
           maxHeight: "100%",
         }}
       >
-        <TextField
-          size="small"
-          id="outlined-search"
-          label="Search..."
-          type="text"
-          value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search sx={{ color: "white" }} />
-                </InputAdornment>
-              ),
-              endAdornment: (
-                <InputAdornment position="end">
-                  <Close
-                    onClick={() => setSearchValue("")}
-                    sx={{
-                      color: searchValue ? "white" : "transparent",
-
-                      cursor: "pointer",
-                    }}
-                    fontSize="small"
-                  />
-                </InputAdornment>
-              ),
-            },
-          }}
-          sx={{
-            minWidth: "120px",
-            maxWidth: "170px",
-            "& label": { color: "white" },
-            "& input": { color: "white" },
-
-            "& label.Mui-focused": { color: "white" },
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": {
-                borderColor: "white",
-              },
-              "&:hover fieldset": {
-                borderColor: "white",
-              },
-
-              "&.Mui-focused fieldset": {
-                borderColor: "white",
-              },
-            },
-          }}
-        />
+        {/* Component rearch boards nhanh */}
+        <AutoCompleteSearchBoard />
         <ModeSelect />
-        <Tooltip title="Notification">
-          <Badge color="warning" variant="dot">
-            <NotificationsNone sx={{ color: "white" }} />
-          </Badge>
-        </Tooltip>
+        <Notifications />
         <Tooltip title="Help">
           <HelpOutline sx={{ color: "white" }} />
         </Tooltip>

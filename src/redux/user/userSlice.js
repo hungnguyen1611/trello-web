@@ -25,6 +25,11 @@ export const logoutUserAPI = createAsyncThunk(
   }
 );
 
+export const updateAPI = createAsyncThunk("user/update", async (data) => {
+  const response = await authorizeAxiosInstance.put("/v1/users/update", data);
+  return response.data;
+});
+
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -44,6 +49,11 @@ const userSlice = createSlice({
     // Kết hợp cùng với ProtectedRoute ở App.js sẽ điều hướng về trang login
     builder.addCase(logoutUserAPI.fulfilled, (state) => {
       state.currentUser = null;
+    });
+
+    builder.addCase(updateAPI.fulfilled, (state, action) => {
+      const user = action.payload;
+      state.currentUser = user;
     });
   },
 });

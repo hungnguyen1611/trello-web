@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 // import { activeBoardReducer } from "./activeBoard/ActiveBoardSlice";
-import { userReducer } from "./user/userSlice";
 import { activeBoardReducer } from "./activeBoard/activeBoardSlice";
+import { userReducer } from "./user/userSlice";
 
 // Cấu hình redux-persist
 // https://www.npmjs.com/package/redux-persist
@@ -11,6 +11,8 @@ import { activeBoardReducer } from "./activeBoard/activeBoardSlice";
 import { combineReducers } from "redux";
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
+import { activeCardReducer } from "./activeCardSlice/ActiveCardSlice";
+import { notificationsReducer } from "./Notifications/NotificationsSlice";
 
 // Cấu hình persist config
 
@@ -25,12 +27,15 @@ const rootPersistConfig = {
   whitelist: ["user"],
   // Định nghĩa các slice dữ liệu ko được phép duy trì qua các lần f5 trình duyệt
   // blacklist: ['user']
+  // transforms: [saveOnlyNotificationAmount],
 };
 
 // Combine các reducer trong dự án ở đây
 const reducers = combineReducers({
   activeBoard: activeBoardReducer,
+  activeCard: activeCardReducer,
   user: userReducer,
+  notifications: notificationsReducer,
 });
 
 // Persist Reducer

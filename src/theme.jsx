@@ -13,6 +13,12 @@ const theme = createTheme({
     columnFooterHeight: COLUMN_FOOTER_HEIGHT,
     columnHeaderHeight: COLUMN_HEADER_HEIGHT,
   },
+
+  globalStyles: {
+    a: {
+      textDecoration: "none",
+    },
+  },
   colorSchemes: {
     light: {
       palette: {

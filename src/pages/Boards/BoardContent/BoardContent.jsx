@@ -28,7 +28,6 @@ const ACTIVE_DRAG_ITEM_TYPE = {
 };
 function BoardContent({
   board,
-
   moveColumns,
   moveCardInTheSameColumn,
   moveCardToDifferentColumn,
