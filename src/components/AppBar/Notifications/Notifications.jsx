@@ -15,7 +15,7 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import useLocalStorage from "~/hook/useLocalStorage";
+import { useLocalStore } from "~/hook/useLocalStorage";
 
 import {
   addNotification,
@@ -47,9 +47,8 @@ function Notifications() {
 
   const navigate = useNavigate();
 
-  // Số lượng thông báo mới lấy từ redux để kiểm tra có thông báo mới hay không nahah
-
-  const [newNotificationAmount, setNewNotificationAmount] = useLocalStorage(
+  // Số lượng thông báo mới lấy từ localStrore để kiểm tra có thông báo mới hay không
+  const [newNotificationAmount, setNewNotificationAmount] = useLocalStore(
     "newNotificationAmount",
     0
   );

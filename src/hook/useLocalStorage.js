@@ -1,31 +1,54 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 
-function useLocalStorage(key, initialValue) {
-  // Lấy giá trị từ localStorage nếu có, nếu không dùng giá trị mặc định
-  const [storedValue, setStoredValue] = useState(() => {
+export function useLocalStore(key, initialValue) {
+  const readValue = useCallback(() => {
+    if (typeof window === "undefined") return initialValue;
+
     try {
-      const item = window.localStorage.getItem(key);
-      return item !== null ? JSON.parse(item) : initialValue;
+      const item = localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
     } catch (error) {
-      console.warn("useLocalStorage error reading:", error);
+      console.warn(`Lỗi đọc localStorage key "${key}":`, error);
       return initialValue;
     }
-  });
+  }, [key, initialValue]);
 
-  // Hàm dùng để cập nhật localStorage và state cùng lúc
-  const setValue = (value) => {
-    try {
-      const valueToStore =
-        value instanceof Function ? value(storedValue) : value;
+  const [storedValue, setStoredValue] = useState(readValue);
 
-      setStoredValue(valueToStore);
-      window.localStorage.setItem(key, JSON.stringify(valueToStore));
-    } catch (error) {
-      console.warn("useLocalStorage error setting:", error);
-    }
-  };
+  const setValue = useCallback(
+    (value) => {
+      try {
+        const valueToStore =
+          value instanceof Function ? value(storedValue) : value;
+
+        // Chỉ cập nhật nếu giá trị thay đổi
+        if (JSON.stringify(valueToStore) === JSON.stringify(storedValue))
+          return;
+
+        setStoredValue(valueToStore);
+        if (typeof window !== "undefined") {
+          localStorage.setItem(key, JSON.stringify(valueToStore));
+        }
+      } catch (error) {
+        console.warn(`Lỗi ghi localStorage key "${key}":`, error);
+      }
+    },
+    [key, storedValue]
+  );
+
+  // Đồng bộ với localStorage khi tab khác thay đổi
+  useEffect(() => {
+    const handleStorageChange = (event) => {
+      if (event.key === key) {
+        setStoredValue(
+          event.newValue ? JSON.parse(event.newValue) : initialValue
+        );
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, [key, initialValue]);
 
   return [storedValue, setValue];
 }
-
-export default useLocalStorage;
