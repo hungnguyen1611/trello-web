@@ -8,6 +8,10 @@ import authorizeAxiosInstance from "~/utils/authorizeAxios";
 //   const response = await authorizeAxiosInstance.get(`/v1/boards/${boardId}`);
 //   return response.data;
 // };
+export const createNewBoardApi = async (newBoard) => {
+  const response = await authorizeAxiosInstance.post("/v1/boards", newBoard);
+  return response.data;
+};
 
 export const createNewColumnApi = async (newColumn) => {
   const response = await authorizeAxiosInstance.post("/v1/columns", newColumn);
@@ -78,5 +82,28 @@ export const verifyUserAPI = async (data) => {
 
 export const refreshTokenAPI = async () => {
   const response = await authorizeAxiosInstance.get("/v1/users/refresh_token");
+  return response.data;
+};
+
+export const fetchBoardsAPI = async (searchPath) => {
+  const response = await authorizeAxiosInstance.get(`/v1/boards${searchPath}`);
+
+  return response.data;
+};
+
+export const UpdateCardDetailAPI = async (cardId, updateData) => {
+  const response = await authorizeAxiosInstance.put(
+    `/v1/cards/${cardId}`,
+    updateData
+  );
+  return response.data;
+};
+
+export const inviteUserToBoardAPI = async (data) => {
+  const response = await authorizeAxiosInstance.post(
+    `/v1/invitations/board`,
+    data
+  );
+  toast.success("User invated to board successfully!");
   return response.data;
 };

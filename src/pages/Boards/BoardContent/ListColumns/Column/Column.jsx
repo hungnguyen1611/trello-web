@@ -22,21 +22,25 @@ import {
   MenuItem,
   TextField,
   Tooltip,
-  Typography,
 } from "@mui/material";
 import { cloneDeep } from "lodash";
 import { useConfirm } from "material-ui-confirm";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { createNewCardApi, deleteColumnDetailAPI } from "~/apis";
+import {
+  createNewCardApi,
+  deleteColumnDetailAPI,
+  UpdateColumnDetailAPI,
+} from "~/apis";
 import {
   selectCurrentActiveBoard,
   updateCurrentActiveBoard,
 } from "~/redux/activeBoard/activeBoardSlice";
 
-import { ListCards } from "./ListCards/ListCards";
 import { useDispatch, useSelector } from "react-redux";
+import ToggleFocusInput from "~/components/Form/ToggleFocusInput";
+import { ListCards } from "./ListCards/ListCards";
 export const Column = ({ column }) => {
   const board = useSelector(selectCurrentActiveBoard);
   const dispatch = useDispatch();
@@ -54,9 +58,21 @@ export const Column = ({ column }) => {
     setAnchorEl(null);
   };
 
+  const onUpdateColumnTile = (newTitle) => {
+    UpdateColumnDetailAPI(column._id, { title: newTitle }).then((res) => {
+      const newBoard = cloneDeep(board);
+      const updateColumn = newBoard.columns.find((c) => c._id === column._id);
+      if (updateColumn) {
+        // updateColumn.title = newTitle;
+        updateColumn.title = res.title;
+      }
+      dispatch(updateCurrentActiveBoard(newBoard));
+    });
+  };
+
   const handleDeleteColumn = async () => {
     const { confirmed } = await confirmDeleteColumn({
-      title: "Delete Column",
+      title: "Delete Column ?",
       description:
         "This action will permanent delete your Column and its Card! Are you sure? Please Enter OK",
       confirmationText: "Confirm",
@@ -127,7 +143,7 @@ export const Column = ({ column }) => {
 
   const addNewCard = async () => {
     if (!newCardTitle)
-      return toast.error("Please enter Card Title", {
+      return toast.error("Please enter Card Title!", {
         position: "bottom-right",
       });
 
@@ -163,7 +179,7 @@ export const Column = ({ column }) => {
 
       dispatch(updateCurrentActiveBoard(newBoard));
 
-      toast.success("Create Card Success");
+      toast.success("Create Card Success!");
     }
 
     // Đóng trạng thái cập nhật Card và clear input
@@ -205,9 +221,16 @@ export const Column = ({ column }) => {
             p: 1,
           }}
         >
-          <Typography sx={{ fontWeight: "bold", cursor: "pointer" }}>
+          {/* <Typography sx={{ fontWeight: "bold", cursor: "pointer" }}>
             {column.title}
-          </Typography>
+          </Typography> */}
+
+          <ToggleFocusInput
+            //  fixbug kéo vào input (thêm data-no-dnd để ko cho phần tử thực hiện kéo thả)
+            data-no-dnd="true"
+            value={column.title}
+            onChangedValue={onUpdateColumnTile}
+          />
 
           <Tooltip title="More options">
             <ExpandMore
@@ -236,6 +259,12 @@ export const Column = ({ column }) => {
             }}
             sx={{
               mt: 0.4, // Tăng khoảng cách trên (margin-top)
+            }}
+            slotProps={{
+              root: {
+                "aria-hidden": open ? "false" : "true", // Kiểm soát aria-hidden (fix cảnh warning)
+                // inert: open ? undefined : "", // Sử dụng inert khi menu đóng (thuộc html5 nên ko tương thích với một số trình duyệt như safari hay Firefox)
+              },
             }}
           >
             <MenuItem

@@ -1,6 +1,7 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Attachment, Comment, Group } from "@mui/icons-material";
+import { Comment, Group } from "@mui/icons-material";
+import InsertCommentIcon from "@mui/icons-material/InsertComment";
 import {
   Button,
   Card,
@@ -10,7 +11,19 @@ import {
   Typography,
 } from "@mui/material";
 import PropTypes from "prop-types";
+import { useDispatch } from "react-redux";
+import {
+  showModalActiveCard,
+  updateCurrentActiveCard,
+} from "~/redux/activeCardSlice/ActiveCardSlice";
 export const CardItem = ({ card }) => {
+  const dispatch = useDispatch();
+
+  const setActiveCard = () => {
+    dispatch(updateCurrentActiveCard(card));
+    dispatch(showModalActiveCard());
+  };
+
   const shouldShowCardActions = () => {
     return (
       !!card?.memberIds?.length ||
@@ -39,6 +52,7 @@ export const CardItem = ({ card }) => {
   return (
     <>
       <Card
+        onClick={setActiveCard}
         style={dndKitCardsStyles}
         ref={setNodeRef}
         {...attributes}
@@ -72,7 +86,7 @@ export const CardItem = ({ card }) => {
               </Button>
             )}
             {!!card?.comments?.length && (
-              <Button startIcon={<Attachment />} size="small">
+              <Button startIcon={<InsertCommentIcon />} size="small">
                 {card?.comments?.length}
               </Button>
             )}

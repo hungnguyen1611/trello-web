@@ -56,6 +56,12 @@ function Recent() {
         sx={{
           mt: 0.4, // Tăng khoảng cách trên (margin-top)
         }}
+        slotProps={{
+          root: {
+            "aria-hidden": open ? "false" : "true", // Kiểm soát aria-hidden (fix cảnh warning)
+            // inert: open ? undefined : "", // Sử dụng inert khi menu đóng (thuộc html5 nên ko tương thích với một số trình duyệt như safari hay Firefox)
+          },
+        }}
       >
         <MenuItem>
           <ListItemText inset>Single</ListItemText>

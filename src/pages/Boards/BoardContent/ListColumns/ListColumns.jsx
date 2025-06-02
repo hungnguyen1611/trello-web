@@ -52,7 +52,7 @@ export const ListColumns = ({ columns }) => {
 
       dispatch(updateCurrentActiveBoard(newBoard));
 
-      toast.success("created Column Success");
+      toast.success("Created Column Success!");
     }
 
     // Đóng trạng thái cập nhật column và clear input

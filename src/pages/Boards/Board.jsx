@@ -10,6 +10,7 @@ import {
 } from "~/apis";
 import AppBar from "~/components/AppBar";
 import { Loading } from "~/components/Loading/Loading";
+import ActiveCard from "~/components/Modal/ActiveCard/ActiveCard";
 import {
   fetchBoardDetailAPI,
   selectCurrentActiveBoard,
@@ -17,16 +18,17 @@ import {
 } from "~/redux/activeBoard/activeBoardSlice";
 import BoardBar from "./BoardBar";
 import BoardContent from "./BoardContent/BoardContent";
+// import ActiveCard from "~/components/Modal/ActiveCard/ActiveCard";
 
 // import { mockData } from "~/apis/mock-data";
 function Board() {
   const { boardId } = useParams();
   // const boardId = "68056569f29a7224ad02d540";
 
+  const dispatch = useDispatch();
+
   // Không dùng State của compoent nữa
   const board = useSelector(selectCurrentActiveBoard);
-
-  const dispatch = useDispatch();
 
   // Func gọi api khi kéo thả column xong xuôi
 
@@ -109,6 +111,11 @@ function Board() {
   if (!board || !board.columns) return <Loading caption="Loading Board" />;
   return (
     <>
+      {/* Modal activeCard check đóng mớ dựa theo điều kiện có tồn tại data active card hay không active card lưu trong redux hay không thì mới render,
+    Mỗi thời điểm thì chỉ tồn tại một cái Modal card đang active  */}
+      {/* {activeCard && <ActiveCard />} */}
+      {/* Check modal ActiveCard đóng mớ dựa vào isShowModalActiveCard trong redux */}
+      <ActiveCard />
       <AppBar />
       <Container
         // sx={{ height: "100vh",  }}
