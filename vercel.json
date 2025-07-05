@@ -1,4 +1,6 @@
 {
+  "_comment": "Cấu hình rewrites để hỗ trợ React Router",
+  "description": "File cấu hình cho Vercel deployment (fix lỗi khi đẩy lên vercel ko thể truy cập vào một số trang như trang: verification để xác thực",
   "rewrites": [
     {
       "source": "/(.*)",

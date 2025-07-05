@@ -1,17 +1,24 @@
 /* eslint-disable react/prop-types */
+import { useSelector } from "react-redux";
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
-import Board from "./pages/Boards/Board";
+import { selectCurrentUser } from "~/redux/user/userSlice";
 import NotFound from "./pages/404/NotFound";
 import Auth from "./pages/Auth";
 import AccountVerification from "./pages/Auth/AccountVerification";
-import { useSelector } from "react-redux";
-import { selectCurrentUser } from "~/redux/user/userSlice";
-import Settings from "./pages/Settings/Settings";
 import Boards from "./pages/Boards";
+import Board from "./pages/Boards/Board";
+import Home from "./pages/Home/Home";
+import Settings from "./pages/Settings/Settings";
+import Templates from "./pages/Templates/Templates";
+// import { useAuth0 } from "@auth0/auth0-react";
 
 const ProtectedRoute = ({ user }) => {
+  // const { loginWithRedirect } = useAuth0();
   if (!user) {
     return <Navigate to={"/login"} replace={true} />;
+    // Sử dụng Auth0
+    // loginWithRedirect();
+    // return null; return là ko cần thiết vì khi chuyển hướng sang nới khác nó sẽ tự động dừng các hoạt động tại component này
   }
   return <Outlet />;
 };
@@ -47,7 +54,9 @@ function App() {
       {/* ProtectedRoute hiểu đơn giản là những route chỉ cho truy cập sau khi đã login */}
       <Route element={<ProtectedRoute user={currentUser} />}>
         {/* Outlet của react-router-dom sẽ chạy vào các child trong này */}
+        <Route path="/home" element={<Home />} />
         <Route path="/boards" element={<Boards />} />
+        <Route path="/templates" element={<Templates />} />
         <Route path="/boards/:boardId" element={<Board />} />
         <Route path="/settings/account" element={<Settings />} />
         <Route path="/settings/security" element={<Settings />} />

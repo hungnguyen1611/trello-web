@@ -86,7 +86,10 @@ function SidebarCreateBoardModal({ afterCreateNewBoard }) {
   // <>...</> nhắc lại cho bạn anof chưa biết hoặc quên nhé: nó là React Fragment, dùng để bọc các phần tử lại mà không cần chỉ định DOM Node cụ thể nào cả.
   return (
     <>
-      <SidebarItem onClick={handleOpenModal}>
+      <SidebarItem
+        sx={{ ml: 2, boxShadow: "0px 8px 4px rgba(0, 0, 0, 0.1)" }}
+        onClick={handleOpenModal}
+      >
         <LibraryAddIcon fontSize="small" />
         Create a new board
       </SidebarItem>

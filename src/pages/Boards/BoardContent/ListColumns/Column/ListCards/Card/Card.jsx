@@ -63,6 +63,7 @@ export const CardItem = ({ card }) => {
           overflow: "unset",
           display: card?.FE_PlaceholderCard ? "none" : "block",
           border: "solid 1px transparent",
+          color: "text.secondary",
           "&:hover": {
             borderColor: "primary.main",
           },
