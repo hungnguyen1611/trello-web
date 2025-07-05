@@ -5,10 +5,12 @@ import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "~/redux/user/userSlice";
+// import { useAuth0 } from "@auth0/auth0-react";
 
 function Auth() {
+  // const { loginWithRedirect, isAuthenticated } = useAuth0();
+
   const location = useLocation();
-  // console.log(location)
   const isLogin = location.pathname === "/login";
   const isRegister = location.pathname === "/register";
   const currentUser = useSelector(selectCurrentUser);
@@ -16,6 +18,11 @@ function Auth() {
   if (currentUser) {
     return <Navigate to={"/"} replace={true} />;
   }
+
+  // if (!isAuthenticated) {
+  //   // loginWithRedirect({ appState: { returnTo: '/dashboard' } }) nếu cần chuyển đến trang cụ thể (dự án này đã được xử lý ở Route in APP.jsx)
+  //   loginWithRedirect();
+  // }
 
   return (
     <Box

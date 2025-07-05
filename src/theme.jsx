@@ -12,6 +12,7 @@ const theme = createTheme({
     boardBarContent: BOARD_CONTENT_HEIGHT,
     columnFooterHeight: COLUMN_FOOTER_HEIGHT,
     columnHeaderHeight: COLUMN_HEADER_HEIGHT,
+    homeHeight: `calc(100vh - (80px + ${APP_BAR_HEIGHT}))`,
   },
 
   globalStyles: {
@@ -19,10 +20,16 @@ const theme = createTheme({
       textDecoration: "none",
     },
   },
+
+  //  Dùng ligth mode hay dark mode thì mới cần colorSchemes
   colorSchemes: {
     light: {
       palette: {
         mode: "light",
+        text: {
+          primary: "#000",
+          secondary: "#000",
+        },
         // primary: teal,
         // secondary: deepOrange,
       },
@@ -35,9 +42,10 @@ const theme = createTheme({
 
         background: {
           paper: "#fff",
+          default: "#fff",
         },
         text: {
-          primary: "#173A5E",
+          primary: "#ddd",
           secondary: "#46505A",
         },
         action: {

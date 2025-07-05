@@ -54,6 +54,7 @@ authorizeAxiosInstance.interceptors.request.use(
 // Mục đích: đảm bảo rằng sau khi gọi refresh_token thành công thì mới thực hiện retry lại các request bị lỗi trước đó
 // Tham khảo: https://www.thedutchlab.com/en/insights/using-axios-interceptors-for-refreshing-your-api-token
 
+// refresh token cần được đặt ở ngoài này để chánh trường hợp bị khai báo lại
 let refreshTokenPromise;
 // Add a response interceptor: Can thiệp vào giữa những response nhân về từ API
 authorizeAxiosInstance.interceptors.response.use(
@@ -80,7 +81,7 @@ authorizeAxiosInstance.interceptors.response.use(
     // Nếu như nhận mã 410 từ BE thì gọi refreshToken để làm mới accessToken
     // Đầu tiên lấy được các request API đang bị lỗi thông qua  error.config
     const originalRequests = error.config;
-    if (error?.response?.status === 410 && !originalRequests._retry) {
+    if (error?.response?.status === 410 && originalRequests) {
       // Gán thêm giá trị retry là true trong khoảng thời gian chờ để đảm bảo việc refresh token luôn chỉ gọi 1 lần
       // Tại một thời điểm (nhìn lại điều kiện if ngay phía trên)
       originalRequests._retry = true;

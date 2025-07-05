@@ -3,11 +3,13 @@
 let apiRoot = "";
 
 if (process.env.BUILD_MODE === "dev") {
+  // apiRoot = "https://trello.site"; // backend http thì ko thể gưi cookie với secure = true
   apiRoot = "http://localhost:5000";
 }
 if (process.env.BUILD_MODE === "production") {
   // apiRoot = "https://trello-backend-c8qp.onrender.com";
-  apiRoot = "https://trello-backend-c8qp.onrender.com";
+  // apiRoot = "https://trello-backend-c8qp.onrender.com";
+  apiRoot = "https://trello.site";
 }
 
 export const DEFAULT_PAGE = 1;
@@ -20,6 +22,8 @@ export const BOARD_INVITATION_STATUS = {
   ACCEPTED: "ACCEPTED",
   REJECTED: "REJECTED",
 };
+
+export const RENDER_API_ENDPOINT = "https://trello-backend-c8qp.onrender.com";
 
 export const CARD_MEMBER_ACTIONS = {
   REMOVE: "REMOVE",
