@@ -12,31 +12,14 @@ import randomColor from "randomcolor";
 import { Link, useLocation } from "react-router-dom";
 import SidebarCreateBoardModal from "./create";
 
-import { styled } from "@mui/material/styles";
+import { Container } from "@mui/material";
 import { fetchBoardsAPI } from "~/apis";
 import Layout from "~/components/LayOut/Layout";
 import { Loading } from "~/components/Loading/Loading";
 import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE } from "~/utils/constants";
-import { Container } from "@mui/material";
+import { capitalizeFirstLetter } from "~/utils/formatters";
 // import { useAuth0 } from "@auth0/auth0-react";
 // Styles của mấy cái Sidebar item menu, anh gom lại ra đây cho gọn.
-const SidebarItem = styled(Box)(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  gap: "8px",
-  cursor: "pointer",
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-  padding: "12px 16px",
-  borderRadius: "8px",
-  "&:hover": {
-    backgroundColor:
-      theme.palette.mode === "dark" ? "#33485D" : theme.palette.grey[300],
-  },
-  "&.active": {
-    color: theme.palette.mode === "dark" ? "#90caf9" : "#0c66e4",
-    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#e9f2ff",
-  },
-}));
 
 function Boards() {
   // Số lượng bản ghi boards hiển thị tối đa trên 1 page tùy dự án (thường sẽ là 12 cái)
@@ -134,9 +117,10 @@ function Boards() {
                         overflow: "hidden",
                         whiteSpace: "nowrap",
                         textOverflow: "ellipsis",
+                        fontWeight: "500",
                       }}
                     >
-                      {b?.description}
+                      {capitalizeFirstLetter(b?.description)}
                     </Typography>
                     <Box
                       component={Link}

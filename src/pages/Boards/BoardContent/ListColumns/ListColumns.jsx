@@ -1,19 +1,19 @@
 import { SortableContext } from "@dnd-kit/sortable";
 import { Close, NoteAdd } from "@mui/icons-material";
 import { Box, Button, Stack, TextField } from "@mui/material";
-import PropTypes from "prop-types";
-import { useState } from "react";
-import { toast } from "react-toastify";
-import { Column } from "./Column/Column";
-import { createNewColumnApi } from "~/apis";
-import { generatePlaceholderCard } from "~/utils/formatters";
 import { cloneDeep } from "lodash";
+import PropTypes from "prop-types";
+import { memo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { createNewColumnApi } from "~/apis";
 import {
   selectCurrentActiveBoard,
   updateCurrentActiveBoard,
 } from "~/redux/activeBoard/activeBoardSlice";
-export const ListColumns = ({ columns }) => {
+import { generatePlaceholderCard } from "~/utils/formatters";
+import Column from "./Column/Column";
+export const ListColumns = memo(({ columns }) => {
   const dispatch = useDispatch();
   const board = useSelector(selectCurrentActiveBoard);
   const [openNewColumn, setOpenNewColoumn] = useState(false);
@@ -177,8 +177,9 @@ export const ListColumns = ({ columns }) => {
       </Stack>
     </SortableContext>
   );
-};
+});
 
+ListColumns.displayName = "ListColumns"; // debug in dev tool
 ListColumns.propTypes = {
   columns: PropTypes.array,
   createColumn: PropTypes.func,

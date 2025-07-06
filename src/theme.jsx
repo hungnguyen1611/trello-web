@@ -41,15 +41,15 @@ const theme = createTheme({
         // secondary: orange,
 
         background: {
-          paper: "#fff",
-          default: "#fff",
+          paper: "#1A2027",
+          default: "#4e5f6e",
         },
         text: {
-          primary: "#ddd",
-          secondary: "#46505A",
+          primary: "#fff",
+          secondary: "#fff",
         },
         action: {
-          active: "#001E3C",
+          active: "#fff", // color of icon in mui
         },
         success: {
           main: "#4caf50", // ✅ Đúng

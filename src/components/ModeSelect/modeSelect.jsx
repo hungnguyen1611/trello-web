@@ -17,6 +17,7 @@ function ModeSelect() {
 
   const handleMode = (e) => {
     setMode(e.target.value);
+    // setMode('dark'); Hard mode can be configured this way
   };
   return (
     <>
@@ -48,7 +49,7 @@ function ModeSelect() {
             },
 
             ".MuiSvgIcon-root": {
-              color: "white",
+              color: "background.default",
             },
           }}
         >
