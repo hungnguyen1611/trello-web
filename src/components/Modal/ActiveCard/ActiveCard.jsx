@@ -149,8 +149,13 @@ function ActiveCard() {
       <Box
         sx={{
           position: "relative",
-          width: 900,
-          maxWidth: 900,
+          width: {
+            xs: "90%",
+            sm: "70%",
+            md: "60%",
+            lg: "50%",
+          },
+          // maxWidth: 900,
           bgcolor: "white",
           boxShadow: 24,
           borderRadius: "8px",
@@ -182,7 +187,7 @@ function ActiveCard() {
             <img
               style={{
                 width: "100%",
-                height: "320px",
+                aspectRatio: 16 / 9,
                 borderRadius: "6px",
                 objectFit: "cover",
               }}

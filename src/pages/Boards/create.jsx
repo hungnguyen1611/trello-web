@@ -1,25 +1,27 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
-import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
-import Typography from "@mui/material/Typography";
-import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
-import CancelIcon from "@mui/icons-material/Cancel";
-import { useForm, Controller } from "react-hook-form";
-import TextField from "@mui/material/TextField";
-import InputAdornment from "@mui/material/InputAdornment";
-import { FIELD_REQUIRED_MESSAGE } from "~/utils/validators";
-import FieldErrorAlert from "~/components/Form/FieldErrorAlert";
 import AbcIcon from "@mui/icons-material/Abc";
+import CancelIcon from "@mui/icons-material/Cancel";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
+import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import InputAdornment from "@mui/material/InputAdornment";
+import Modal from "@mui/material/Modal";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import FieldErrorAlert from "~/components/Form/FieldErrorAlert";
+import { FIELD_REQUIRED_MESSAGE } from "~/utils/validators";
 
 import { styled } from "@mui/material/styles";
-import { createNewBoardApi } from "~/apis";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { createNewBoardApi } from "~/apis";
+import { AddToPhotos } from "@mui/icons-material";
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
@@ -48,7 +50,8 @@ const BOARD_TYPES = {
  * Bản chất của cái component SidebarCreateBoardModal này chúng ta sẽ trả về một cái SidebarItem để hiển thị ở màn Board List cho phù hợp giao diện bên đó, đồng thời nó cũng chứa thêm một cái Modal để xử lý riêng form create board nhé.
  * Note: Modal là một low-component mà bọn MUI sử dụng bên trong những thứ như Dialog, Drawer, Menu, Popover. Ở đây dĩ nhiên chúng ta có thể sử dụng Dialog cũng không thành vấn đề gì, nhưng sẽ sử dụng Modal để dễ linh hoạt tùy biến giao diện từ con số 0 cho phù hợp với mọi nhu cầu nhé.
  */
-function SidebarCreateBoardModal({ afterCreateNewBoard }) {
+function SidebarCreateBoardModal({ afterCreateNewBoard = () => {}, redirect }) {
+  const navigate = useNavigate();
   const {
     control,
     register,
@@ -76,23 +79,41 @@ function SidebarCreateBoardModal({ afterCreateNewBoard }) {
       title: data.title.trim(),
       description: data.description.trim(),
     };
-    createNewBoardApi(trimmedData).then(() => {
+    createNewBoardApi(trimmedData).then((newBoard) => {
       handleCloseModal();
       afterCreateNewBoard();
       toast.success("Created Board Successfully!");
+      if (redirect) navigate(`/boards/${newBoard._id}`);
     });
   };
 
   // <>...</> nhắc lại cho bạn anof chưa biết hoặc quên nhé: nó là React Fragment, dùng để bọc các phần tử lại mà không cần chỉ định DOM Node cụ thể nào cả.
   return (
     <>
-      <SidebarItem
-        sx={{ ml: 2, boxShadow: "0px 8px 4px rgba(0, 0, 0, 0.1)" }}
-        onClick={handleOpenModal}
-      >
-        <LibraryAddIcon fontSize="small" />
-        Create a new board
-      </SidebarItem>
+      {redirect ? (
+        <Button
+          onClick={handleOpenModal}
+          startIcon={<AddToPhotos />}
+          sx={{
+            color: "white",
+            border: "none",
+            "&:hover": {
+              bgcolor: "transparent",
+            },
+          }}
+          variant="outlined"
+        >
+          Create
+        </Button>
+      ) : (
+        <SidebarItem
+          sx={{ ml: 2, boxShadow: "0px 8px 4px rgba(0, 0, 0, 0.1)" }}
+          onClick={handleOpenModal}
+        >
+          <LibraryAddIcon fontSize="small" />
+          Create a new board
+        </SidebarItem>
+      )}
 
       <Modal
         open={isOpen}
@@ -106,7 +127,12 @@ function SidebarCreateBoardModal({ afterCreateNewBoard }) {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: 600,
+            width: {
+              xs: "90%",
+              sm: "70%",
+              md: "50%",
+              lg: "40%",
+            },
             bgcolor: "white",
             boxShadow: 24,
             borderRadius: "8px",
@@ -114,7 +140,7 @@ function SidebarCreateBoardModal({ afterCreateNewBoard }) {
             outline: 0,
             padding: "20px 30px",
             backgroundColor: (theme) =>
-              theme.palette.mode === "dark" ? "#1A2027" : "white",
+              theme.palette.mode === "dark" ? "#1A2027" : "#fff",
           }}
         >
           <Box

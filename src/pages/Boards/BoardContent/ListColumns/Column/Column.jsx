@@ -411,13 +411,13 @@ function Column({ column }) {
                 <IconButton
                   size="small"
                   aria-label="close"
-                  color="white"
+                  // color="white"
                   onClick={toggleOpenNewCard}
-                  sx={{
-                    "&:hover": {
-                      bgcolor: "transparent",
-                    },
-                  }}
+                  // sx={{
+                  //   "&:hover": {
+                  //     bgcolor: "transparent",
+                  //   },
+                  // }}
                 >
                   <Close fontSize="small" />
                 </IconButton>

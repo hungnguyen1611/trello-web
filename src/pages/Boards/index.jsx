@@ -17,6 +17,7 @@ import { fetchBoardsAPI } from "~/apis";
 import Layout from "~/components/LayOut/Layout";
 import { Loading } from "~/components/Loading/Loading";
 import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE } from "~/utils/constants";
+import { capitalizeFirstLetter } from "~/utils/formatters";
 // import { useAuth0 } from "@auth0/auth0-react";
 // Styles của mấy cái Sidebar item menu, anh gom lại ra đây cho gọn.
 
@@ -116,9 +117,10 @@ function Boards() {
                         overflow: "hidden",
                         whiteSpace: "nowrap",
                         textOverflow: "ellipsis",
+                        fontWeight: "500",
                       }}
                     >
-                      {b?.description}
+                      {capitalizeFirstLetter(b?.description)}
                     </Typography>
                     <Box
                       component={Link}

@@ -1,14 +1,11 @@
-import { AddToPhotos, HelpOutline } from "@mui/icons-material";
+import { HelpOutline } from "@mui/icons-material";
 import AppsIcon from "@mui/icons-material/Apps";
-import { Box, Button, Tooltip, Typography } from "@mui/material";
+import { Box, Tooltip, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
+import SidebarCreateBoardModal from "~/pages/Boards/create";
 import { TrelloIcon } from "../Icons/Icon";
 import ModeSelect from "../ModeSelect";
 import Profile from "./Menus/Profiles";
-import Recent from "./Menus/Recent";
-import Starred from "./Menus/Starred";
-import Template from "./Menus/Templates";
-import WorkSpace from "./Menus/WorkSpaces";
 import Notifications from "./Notifications/Notifications";
 import AutoCompleteSearchBoard from "./SearchBoards/AutoCompleteSearchBoard";
 
@@ -55,24 +52,7 @@ function AppBar() {
             },
           }}
         >
-          <WorkSpace />
-          <Recent />
-          <Starred />
-          <Template />
-
-          <Button
-            startIcon={<AddToPhotos />}
-            sx={{
-              color: "white",
-              border: "none",
-              "&:hover": {
-                bgcolor: "transparent",
-              },
-            }}
-            variant="outlined"
-          >
-            Create
-          </Button>
+          <SidebarCreateBoardModal redirect />
         </Box>
       </Box>
       <Box
