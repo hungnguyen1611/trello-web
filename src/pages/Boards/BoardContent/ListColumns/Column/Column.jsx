@@ -41,7 +41,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import ToggleFocusInput from "~/components/Form/ToggleFocusInput";
 import { ListCards } from "./ListCards/ListCards";
-export const Column = ({ column }) => {
+function Column({ column }) {
   const board = useSelector(selectCurrentActiveBoard);
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -428,7 +428,9 @@ export const Column = ({ column }) => {
       </Box>
     </div>
   );
-};
+}
+export default Column;
+// export default React.memo(Column); Do ảnh hưởng bởi dnd toolkit cần render liên tục  nên component luôn render nên ko cần dùng React.memo
 
 Column.propTypes = {
   column: PropTypes.object.isRequired,

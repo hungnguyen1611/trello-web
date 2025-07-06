@@ -11,12 +11,13 @@ import {
   Typography,
 } from "@mui/material";
 import PropTypes from "prop-types";
+import { memo } from "react";
 import { useDispatch } from "react-redux";
 import {
   showModalActiveCard,
   updateCurrentActiveCard,
 } from "~/redux/activeCardSlice/ActiveCardSlice";
-export const CardItem = ({ card }) => {
+export const CardItem = memo(({ card }) => {
   const dispatch = useDispatch();
 
   const setActiveCard = () => {
@@ -101,7 +102,9 @@ export const CardItem = ({ card }) => {
       </Card>
     </>
   );
-};
+});
+
+CardItem.displayName = "CardItem";
 
 CardItem.propTypes = {
   card: PropTypes.object,

@@ -23,6 +23,7 @@ import BoardContent from "./BoardContent/BoardContent";
 // import { mockData } from "~/apis/mock-data";
 function Board() {
   const { boardId } = useParams();
+
   // const boardId = "68056569f29a7224ad02d540";
 
   const dispatch = useDispatch();

@@ -18,7 +18,7 @@ import PropTypes from "prop-types";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MouseSensor, TouchSensor } from "~/customLibraries/DndKitSensors";
 import { generatePlaceholderCard } from "~/utils/formatters";
-import { Column } from "./ListColumns/Column/Column";
+import Column from "./ListColumns/Column/Column";
 import { CardItem } from "./ListColumns/Column/ListCards/Card/Card";
 import { ListColumns } from "./ListColumns/ListColumns";
 
