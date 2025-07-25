@@ -1,4 +1,4 @@
-import Layout from "~/components/LayOut/Layout";
+import Layout from "~/components/Layouts/Layout";
 
 export default function Templates() {
   return <Layout>Templates</Layout>;

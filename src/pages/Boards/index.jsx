@@ -14,7 +14,7 @@ import SidebarCreateBoardModal from "./create";
 
 import { Container } from "@mui/material";
 import { fetchBoardsAPI } from "~/apis";
-import Layout from "~/components/LayOut/Layout";
+import Layout from "~/components/Layouts/Layout";
 import { Loading } from "~/components/Loading/Loading";
 import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE } from "~/utils/constants";
 import { capitalizeFirstLetter } from "~/utils/formatters";

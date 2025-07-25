@@ -1,7 +1,7 @@
 import { Box, Container, Stack, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import { CustomButton } from "~/components/CustomButton/CustomButton";
-import Layout from "~/components/LayOut/Layout";
+import Layout from "~/components/Layouts/Layout";
 
 export default function Home() {
   // const settings = {
