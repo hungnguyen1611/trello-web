@@ -4,8 +4,7 @@ import { API_ROOT } from "~/utils/constants";
 
 export default function LoginGoogle() {
   const handleLogin = () => {
-    const clientId =
-      "373355810712-3550a9gvv5j5po8svso8aadl2b7k3e8h.apps.googleusercontent.com";
+    const clientId = import.meta.env.CLIENT_ID_GOOGLE;
 
     const redirectUri = `${API_ROOT}/v1/users/login_google`;
 
