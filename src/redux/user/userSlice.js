@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import authorizeAxiosInstance from "~/utils/authorizeAxios";
 
+// Lưu ý khi dùng createAsyncThunk , chỉ được truyền 1 đối số duyy nhất, tham số thứ 2 là của createAsyncThunk
 const initialState = {
   currentUser: null,
 };

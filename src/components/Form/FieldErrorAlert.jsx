@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 // TrungQuanDev: https://youtube.com/@trungquandev
 import Alert from "@mui/material/Alert";
 

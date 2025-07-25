@@ -23,6 +23,7 @@ import FieldErrorAlert from "~/components/Form/FieldErrorAlert";
 import { useDispatch } from "react-redux";
 import { loginUserAPI } from "~/redux/user/userSlice";
 import { toast } from "react-toastify";
+import LoginGoogle from "~/components/ButtonLoginGoogle/LoginGoogle";
 
 function LoginForm() {
   let [searchParams] = useSearchParams();
@@ -184,6 +185,7 @@ function LoginForm() {
                 Create account!
               </Typography>
             </Link>
+            <LoginGoogle />
           </Box>
         </MuiCard>
       </Zoom>

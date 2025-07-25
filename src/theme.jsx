@@ -97,6 +97,16 @@ const theme = createTheme({
           "&:hover fieldset": {
             borderWidth: "2px",
           },
+
+          "& .MuiInputBase-input:-internal-autofill-selected": {
+            WebkitBoxShadow: "0 0 0 1000px #262626 inset", // Màu nền khi chọn gợi ý
+            WebkitTextFillColor: "#fff", // Màu chữ
+          },
+          "& .MuiInputBase-input:-internal-autofill-previewed": {
+            WebkitBoxShadow: `0 0 0 1000px #262626 inset`,
+            // Màu nền khi gợi ý được xem trước
+            WebkitTextFillColor: "#fff", // Màu chữ
+          },
         },
       },
     },

@@ -14,6 +14,7 @@ import Home from "./pages/Home/Home";
 // import Settings from "./pages/Settings/Settings";
 const Settings = lazy(() => import("./pages/Settings/Settings"));
 import Templates from "./pages/Templates/Templates";
+import WellCome from "./pages/WellCome/WellCome";
 // import { useAuth0 } from "@auth0/auth0-react";
 
 const ProtectedRoute = ({ user }) => {
@@ -71,8 +72,9 @@ function App() {
         <Route path="/register" element={<Auth />} />
         <Route path="/login" element={<Auth />} />
         <Route path="/account/verification" element={<AccountVerification />} />
+        <Route path="/welcome" element={<WellCome />} />
       </Routes>
-    </Suspense>
+    </Suspense> 
   );
 }
 
