@@ -81,7 +81,17 @@ function LoginForm() {
               color: (theme) => theme.palette.grey[500],
             }}
           >
-            Author: hungnguyen
+            Author:{" "}
+            <Typography
+              ml={0.5}
+              target="_blank"
+              variant="span"
+              sx={{ fontWeight: "bold", "&:hover": { color: "#fdba26" } }}
+              component={"a"}
+              href="https://www.hungnguyen1611.online"
+            >
+              DevNguyen
+            </Typography>
           </Box>
           <Box
             sx={{

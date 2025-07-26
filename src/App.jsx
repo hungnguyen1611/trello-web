@@ -15,6 +15,7 @@ import Home from "./pages/Home/Home";
 const Settings = lazy(() => import("./pages/Settings/Settings"));
 import Templates from "./pages/Templates/Templates";
 import WellCome from "./pages/WellCome/WellCome";
+import { Loading } from "./components/Loading/Loading";
 // import { useAuth0 } from "@auth0/auth0-react";
 
 const ProtectedRoute = ({ user }) => {
@@ -31,7 +32,7 @@ const ProtectedRoute = ({ user }) => {
 function App() {
   const currentUser = useSelector(selectCurrentUser);
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<Loading caption="Loading..." />}>
       <Routes>
         {/* Redirect Route   */}
         <Route
@@ -74,7 +75,7 @@ function App() {
         <Route path="/account/verification" element={<AccountVerification />} />
         <Route path="/welcome" element={<WellCome />} />
       </Routes>
-    </Suspense> 
+    </Suspense>
   );
 }
 

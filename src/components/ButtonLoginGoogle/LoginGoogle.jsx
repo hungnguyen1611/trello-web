@@ -5,6 +5,7 @@ import { GoogleIcon } from "../Icons/Icon";
 export default function LoginGoogle() {
   const handleLogin = () => {
     // Lưu ý ko được để lộ client  id nếu ko sẽ gây ra lỗi (log id , để id trực tiếp trong code)
+    // Các giá trị bên trong phải đc viết ở env
 
     const clientId = import.meta.env.VITE_CLIENT_ID_GOOGLE;
 
