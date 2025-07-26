@@ -5,6 +5,7 @@ import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import { useSelector } from "react-redux";
 import { selectCurrentUser } from "~/redux/user/userSlice";
+import { Loading } from "~/components/Loading/Loading";
 // import { useAuth0 } from "@auth0/auth0-react";
 
 function Auth() {
