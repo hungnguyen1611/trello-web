@@ -2,9 +2,10 @@
 import HomeIcon from "@mui/icons-material/Home";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import SpaceDashboardIcon from "@mui/icons-material/SpaceDashboard";
-import { Box, Stack } from "@mui/material";
+import { Box, Divider, Stack } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { NavLink } from "react-router-dom";
+import SidebarCreateBoardModal from "~/pages/Boards/create";
 
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -41,6 +42,12 @@ export default function SideBar() {
           <HomeIcon fontSize="small" />
           Home
         </SidebarItem>
+
+        <Divider />
+
+        <Box display={{ xs: "block", md: "none" }}>
+          <SidebarCreateBoardModal />
+        </Box>
       </Stack>
     </>
   );

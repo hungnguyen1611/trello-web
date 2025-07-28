@@ -16,6 +16,7 @@ const Settings = lazy(() => import("./pages/Settings/Settings"));
 import Templates from "./pages/Templates/Templates";
 import WellCome from "./pages/WellCome/WellCome";
 import { Loading } from "./components/Loading/Loading";
+import Layout from "./components/Layouts/Layout";
 // import { useAuth0 } from "@auth0/auth0-react";
 
 const ProtectedRoute = ({ user }) => {
@@ -61,9 +62,11 @@ function App() {
         {/* ProtectedRoute hiểu đơn giản là những route chỉ cho truy cập sau khi đã login */}
         <Route element={<ProtectedRoute user={currentUser} />}>
           {/* Outlet của react-router-dom sẽ chạy vào các child trong này */}
-          <Route path="/home" element={<Home />} />
-          <Route path="/boards" element={<Boards />} />
-          <Route path="/templates" element={<Templates />} />
+          <Route element={<Layout />}>
+            <Route path="/home" element={<Home />} />
+            <Route path="/boards" element={<Boards />} />
+            <Route path="/templates" element={<Templates />} />
+          </Route>
           <Route path="/boards/:boardId" element={<Board />} />
           <Route path="/settings/account" element={<Settings />} />
           <Route path="/settings/security" element={<Settings />} />
