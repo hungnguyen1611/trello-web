@@ -3,7 +3,7 @@ import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
 // Grid: https://mui.com/material-ui/react-grid2/#whats-changed
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import Card from "@mui/material/Card";
+import { default as BoardCard } from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Grid from "@mui/material/Grid";
 import Pagination from "@mui/material/Pagination";
@@ -14,7 +14,6 @@ import SidebarCreateBoardModal from "./create";
 
 import { Container } from "@mui/material";
 import { fetchBoardsAPI } from "~/apis";
-import Layout from "~/components/Layouts/Layout";
 import { Loading } from "~/components/Loading/Loading";
 import { DEFAULT_ITEMS_PER_PAGE, DEFAULT_PAGE } from "~/utils/constants";
 import { capitalizeFirstLetter } from "~/utils/formatters";
@@ -75,113 +74,113 @@ function Boards() {
     return <Loading caption="Loading Boards..." />;
   }
   return (
-    <Layout>
-      <Container>
-        <Typography variant="h4" sx={{ fontWeight: "bold", mb: 3 }}>
-          Your boards:
+    <Container>
+      <Typography variant="h4" sx={{ fontWeight: "bold", mb: 3 }}>
+        Your boards:
+      </Typography>
+
+      {/* Trường hợp gọi API nhưng không tồn tại cái board nào trong Database trả về */}
+      {boards?.length === 0 && (
+        <Typography variant="span" sx={{ fontWeight: "bold", mb: 3 }}>
+          No result found!
         </Typography>
+      )}
 
-        {/* Trường hợp gọi API nhưng không tồn tại cái board nào trong Database trả về */}
-        {boards?.length === 0 && (
-          <Typography variant="span" sx={{ fontWeight: "bold", mb: 3 }}>
-            No result found!
-          </Typography>
-        )}
+      {/* Trường hợp gọi API và có boards trong Database trả về thì render danh sách boards */}
+      {boards?.length > 0 && (
+        <Grid container spacing={2}>
+          {boards.map((b) => (
+            <Grid
+              sx={{
+                placeItems: "center",
+              }}
+              size={{ xs: 12, md: 6, lg: 4, xl: 3 }}
+              key={b._id}
+            >
+              <BoardCard sx={{ width: "100%" }}>
+                {/* Ý tưởng mở rộng về sau làm ảnh Cover cho board nhé */}
+                {/* <CardMedia component="img" height="100" image="https://picsum.photos/100" /> */}
+                <Box
+                  sx={{ height: "50px", backgroundColor: randomColor() }}
+                ></Box>
 
-        {/* Trường hợp gọi API và có boards trong Database trả về thì render danh sách boards */}
-        {boards?.length > 0 && (
-          <Grid container spacing={2}>
-            {boards.map((b) => (
-              <Grid
-                sx={{
-                  placeItems: "center",
-                }}
-                size={{ xs: 12, sm: 3, md: 4 }}
-                key={b._id}
-              >
-                <Card sx={{ width: "250px" }}>
-                  {/* Ý tưởng mở rộng về sau làm ảnh Cover cho board nhé */}
-                  {/* <CardMedia component="img" height="100" image="https://picsum.photos/100" /> */}
+                <CardContent sx={{ p: 1.5, "&:last-child": { p: 1.5 } }}>
+                  <Typography gutterBottom variant="h6" component="div">
+                    {b.title}
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
+                      fontWeight: "500",
+                    }}
+                  >
+                    {capitalizeFirstLetter(b?.description)}
+                  </Typography>
                   <Box
-                    sx={{ height: "50px", backgroundColor: randomColor() }}
-                  ></Box>
+                    component={Link}
+                    to={`/boards/${b._id}`}
+                    sx={{
+                      mt: 1,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "flex-end",
+                      color: "primary.main",
+                      "&:hover": { color: "primary.light" },
+                    }}
+                  >
+                    Go to board <ArrowRightIcon fontSize="small" />
+                  </Box>
+                </CardContent>
+              </BoardCard>
+            </Grid>
+          ))}
 
-                  <CardContent sx={{ p: 1.5, "&:last-child": { p: 1.5 } }}>
-                    <Typography gutterBottom variant="h6" component="div">
-                      {b.title}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{
-                        overflow: "hidden",
-                        whiteSpace: "nowrap",
-                        textOverflow: "ellipsis",
-                        fontWeight: "500",
-                      }}
-                    >
-                      {capitalizeFirstLetter(b?.description)}
-                    </Typography>
-                    <Box
-                      component={Link}
-                      to={`/boards/${b._id}`}
-                      sx={{
-                        mt: 1,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "flex-end",
-                        color: "primary.main",
-                        "&:hover": { color: "primary.light" },
-                      }}
-                    >
-                      Go to board <ArrowRightIcon fontSize="small" />
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-
+          <Box display={{ xs: "none", md: "block" }}>
             <SidebarCreateBoardModal
               afterCreateNewBoard={afterCreateNewBoard}
             />
-          </Grid>
-        )}
-
-        {/* Trường hợp gọi API và có totalBoards trong Database trả về thì render khu vực phân trang  */}
-        {totalBoards > 0 && (
-          <Box
-            sx={{
-              my: 3,
-              pr: 5,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-end",
-            }}
-          >
-            <Pagination
-              size="large"
-              color="secondary"
-              // showFirstButton
-              // showLastButton
-              // Giá trị prop count của component Pagination là để hiển thị tổng số lượng page, công thức là lấy Tổng số lượng bản ghi chia cho số lượng bản ghi muốn hiển thị trên 1 page (ví dụ thường để 12, 24, 26, 48...vv). sau cùng là làm tròn số lên bằng hàm Math.ceil
-              count={Math.ceil(totalBoards / DEFAULT_ITEMS_PER_PAGE)}
-              // Giá trị của page hiện tại đang đứng
-              page={page}
-              // Render các page item và đồng thời cũng là những cái link để chúng ta click chuyển trang
-              renderItem={(item) => (
-                <PaginationItem
-                  component={Link}
-                  to={`/boards${
-                    item.page === DEFAULT_PAGE ? "" : `?page=${item.page}`
-                  }`}
-                  {...item}
-                />
-              )}
-            />
           </Box>
-        )}
-      </Container>
-    </Layout>
+        </Grid>
+      )}
+
+      {/* Trường hợp gọi API và có totalBoards trong Database trả về thì render khu vực phân trang  */}
+      {totalBoards > 0 && (
+        <Box
+          sx={{
+            my: 3,
+            pr: 5,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+          }}
+        >
+          <Pagination
+            size="large"
+            color="secondary"
+            // showFirstButton
+            // showLastButton
+            // Giá trị prop count của component Pagination là để hiển thị tổng số lượng page, công thức là lấy Tổng số lượng bản ghi chia cho số lượng bản ghi muốn hiển thị trên 1 page (ví dụ thường để 12, 24, 26, 48...vv). sau cùng là làm tròn số lên bằng hàm Math.ceil
+            count={Math.ceil(totalBoards / DEFAULT_ITEMS_PER_PAGE)}
+            // Giá trị của page hiện tại đang đứng
+            page={page}
+            // Render các page item và đồng thời cũng là những cái link để chúng ta click chuyển trang
+            renderItem={(item) => (
+              <PaginationItem
+                component={Link}
+                to={`/boards${
+                  item.page === DEFAULT_PAGE ? "" : `?page=${item.page}`
+                }`}
+                {...item}
+              />
+            )}
+          />
+        </Box>
+      )}
+    </Container>
   );
 }
 

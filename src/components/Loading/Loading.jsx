@@ -1,4 +1,4 @@
-import { Box, colors, Stack } from "@mui/material";
+import { colors, Stack } from "@mui/material";
 import PropTypes from "prop-types";
 
 import { RingLoader } from "react-spinners";

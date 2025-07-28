@@ -1,7 +1,6 @@
 import { Box, Container, Stack, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import { CustomButton } from "~/components/CustomButton/CustomButton";
-import Layout from "~/components/Layouts/Layout";
 
 export default function Home() {
   // const settings = {
@@ -24,46 +23,36 @@ export default function Home() {
   //   ],
   // };
   return (
-    <Layout>
-      <Box
-        height={(theme) => theme.trello.homeHeight}
-        // height={"100%"}
-        sx={{
-          backgroundImage: "url(/images/bg_home.jpg)",
-          WebkitBackgroundSize: "cover",
-          backgroundPosition: "center",
-          color: "text.secondary",
-          py: 4,
-        }}
-      >
-        <Container>
-          <Stack spacing={2}>
-            <Typography
-              sx={{
-                fontFamily: '"Emilys Candy", serif',
-              }}
-              variant="h3"
-              fontWeight={"600"}
-            >
-              Welcome to trello, your companion in every project.
-            </Typography>
+    <Box
+      height={(theme) => theme.trello.homeHeight}
+      // height={"100%"}
+      sx={{
+        backgroundImage: "url(/images/bg_home.jpg)",
+        WebkitBackgroundSize: "cover",
+        backgroundPosition: "center",
+        color: "text.secondary",
+        py: 4,
+      }}
+    >
+      <Container>
+        <Stack spacing={2}>
+          <Typography
+            sx={{
+              fontFamily: '"Emilys Candy", serif',
+            }}
+            variant="h3"
+            fontWeight={"600"}
+          >
+            Welcome to trello, your companion in every project.
+          </Typography>
 
-            <Box>
-              <Link to="/">
-                <CustomButton>Join for free</CustomButton>
-              </Link>
-            </Box>
-
-            {/* <Box>
-              <Slider {...settings}>
-                {[...Array.from({ length: 10 })].map((item, idex) => (
-                  <CardProduct key={idex} />
-                ))}
-              </Slider>
-            </Box> */}
-          </Stack>
-        </Container>
-      </Box>
-    </Layout>
+          <Box>
+            <Link to="/">
+              <CustomButton>Join for free</CustomButton>
+            </Link>
+          </Box>
+        </Stack>
+      </Container>
+    </Box>
   );
 }
