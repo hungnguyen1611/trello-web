@@ -17,12 +17,14 @@ import {
   showModalActiveCard,
   updateCurrentActiveCard,
 } from "~/redux/activeCardSlice/ActiveCardSlice";
+import { socketIoInstance } from "~/socketClient";
 export const CardItem = memo(({ card }) => {
   const dispatch = useDispatch();
 
   const setActiveCard = () => {
     dispatch(updateCurrentActiveCard(card));
     dispatch(showModalActiveCard());
+    socketIoInstance.emit("joinCard", card._id);
   };
 
   const shouldShowCardActions = () => {

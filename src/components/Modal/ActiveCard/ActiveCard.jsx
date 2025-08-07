@@ -44,6 +44,8 @@ import { UpdateCardDetailAPI } from "~/apis";
 import { updateCardInBoard } from "~/redux/activeBoard/activeBoardSlice";
 import { selectCurrentUser } from "~/redux/user/userSlice";
 import { CARD_MEMBER_ACTIONS } from "~/utils/constants";
+import { socketIoInstance } from "~/socketClient";
+import { useEffect } from "react";
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
@@ -133,12 +135,31 @@ function ActiveCard() {
   // Nếu chỉ dùng async mà không dùng await mà bên kia gọi hàm thì cx vô nghĩa vì hàm sẽ ko chờ mà chạy qua luôn (bên gọi hàm sẽ hiểu là hàm đã chạy xong rồi)
   const onAddCardComment = async (commentToAdd) => {
     await callApiUpdateCard({ commentToAdd });
+    socketIoInstance.emit("FE_COMMENT_CARD", {
+      cardId: activeCard._id,
+      comment: commentToAdd,
+    });
   };
 
   const onUpdateCardMembers = (icomingMemberInfo) => {
     callApiUpdateCard({ icomingMemberInfo });
   };
 
+  useEffect(() => {
+    socketIoInstance.on("BE_COMMENT_CARD", (comment) => {
+      const updatedCard = {
+        ...activeCard,
+        comments: [comment, ...activeCard.comments],
+      };
+
+      dispatch(updateCurrentActiveCard(updatedCard));
+      dispatch(updateCardInBoard(updatedCard));
+    });
+
+    return () => {
+      socketIoInstance.off("BE_COMMENT_CARD");
+    };
+  }, [activeCard, dispatch]);
   return (
     <Modal
       disableScrollLock
